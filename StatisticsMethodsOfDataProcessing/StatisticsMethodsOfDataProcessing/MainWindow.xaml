@@ -21,27 +21,73 @@
                 <Grid Background="#FFE5E5E5" />
             </TabItem>
             <TabItem Header="Classifiers">
-                <DockPanel Width="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TabControl}}}" Height="{Binding ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TabControl}}}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
                     <Button
                         Grid.Row="0"
                         Grid.Column="0"
+                        Margin="0,0,15,15"
                         Content="Open file" />
                     <Button
                         Grid.Row="0"
                         Grid.Column="1"
+                        Margin="0,0,15,15"
                         Content="Train" />
                     <Button
                         Grid.Row="0"
                         Grid.Column="2"
+                        Margin="0,0,15,15"
                         Content="Execute" />
                     <ComboBox
                         Grid.Row="1"
                         Grid.Column="0"
                         Width="120"
-                        Margin="0"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top" />
-                </DockPanel>
+                    <Label
+                        Name="kLabel"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Height="28"
+                        HorizontalAlignment="Left"
+                        Content="k:" />
+                    <TextBox
+                        Name="kTextBox"
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        Width="100"
+                        Margin="0,10,0,10"
+                        HorizontalAlignment="Right" />
+                    <Label
+                        Name="trainingPartLabel"
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Height="28"
+                        HorizontalAlignment="Left"
+                        Content="Training part:" />
+                    <TextBox
+                        Name="trainingPartTextBox"
+                        Grid.Row="2"
+                        Grid.Column="2"
+                        Width="100"
+                        Margin="0,10,0,10"
+                        HorizontalAlignment="Right" />
+                    <TextBlock
+                        Grid.Row="3"
+                        Grid.Column="0"
+                        Width="150"
+                        Height="150" />
+                </Grid>
             </TabItem>
         </TabControl>
     </Grid>
