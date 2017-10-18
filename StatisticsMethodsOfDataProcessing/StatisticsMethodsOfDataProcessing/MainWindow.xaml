@@ -11,8 +11,8 @@
     mc:Ignorable="d">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="2*" />
-            <RowDefinition Height="*" />
+            <RowDefinition />
+            <RowDefinition />
         </Grid.RowDefinitions>
         <TabControl
             Grid.Row="0"
@@ -25,17 +25,14 @@
             <TabItem Header="Feature selection">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
+                        <RowDefinition MinHeight="40" />
+                        <RowDefinition MinHeight="40" />
+                        <RowDefinition MinHeight="40" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="91*" />
-                        <ColumnDefinition Width="100*" />
-                        <ColumnDefinition Width="67*" />
-                        <ColumnDefinition Width="6*" />
+                        <ColumnDefinition MinWidth="100" />
+                        <ColumnDefinition MinWidth="100" />
+                        <ColumnDefinition MinWidth="100" />
                     </Grid.ColumnDefinitions>
                     <Button
                         x:Name="FeaturesSelectionOpenFileButton"
@@ -88,16 +85,15 @@
             <TabItem BorderThickness="0" Header="Classifiers">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
+                        <RowDefinition MinHeight="35" />
+                        <RowDefinition MinHeight="35" />
+                        <RowDefinition MinHeight="35" />
+                        <RowDefinition MinHeight="35" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                        <ColumnDefinition />
+                        <ColumnDefinition MinWidth="100" />
+                        <ColumnDefinition MinWidth="100" />
+                        <ColumnDefinition MinWidth="100" />
                     </Grid.ColumnDefinitions>
                     <Button
                         x:Name="ClassifiersOpenFileButton"
