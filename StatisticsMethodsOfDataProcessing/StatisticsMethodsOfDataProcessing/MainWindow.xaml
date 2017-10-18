@@ -13,16 +13,14 @@
         <TabControl
             Margin="0"
             HorizontalAlignment="Left"
-            VerticalAlignment="Top">
-            <TabItem Header="Preprocessing">
-                <Grid Background="#FFE5E5E5" />
-            </TabItem>
+            VerticalAlignment="Top"
+            BorderThickness="0">
+            <Grid Background="#FFE5E5E5" />
+            <TabItem Header="Preprocessing" />
             <TabItem Header="Feature selection">
-                <Grid Background="#FFE5E5E5" />
-            </TabItem>
-            <TabItem Header="Classifiers">
                 <Grid>
                     <Grid.RowDefinitions>
+                        <RowDefinition />
                         <RowDefinition />
                         <RowDefinition />
                         <RowDefinition />
@@ -34,59 +32,139 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <Button
+                        x:Name="featuresSelectionOpenFileButton"
                         Grid.Row="0"
                         Grid.Column="0"
                         Margin="0,0,15,15"
                         Content="Open file" />
                     <Button
+                        x:Name="featuresSelectionSaveFileButton"
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        Margin="0,0,15,15"
+                        Content="Save file" />
+                    <Button
+                        x:Name="featuresSelectionComputeButton"
+                        Grid.Row="0"
+                        Grid.Column="2"
+                        Margin="0,0,15,15"
+                        Content="Compute" />
+                    <Label
+                        x:Name="featuresSelectionFeaturesCountLabel"
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Height="28"
+                        HorizontalAlignment="Left"
+                        Content="Features count:" />
+                    <TextBox
+                        x:Name="featuresSelectionFeaturesCountTextBox"
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Width="100"
+                        Margin="0,10,0,10"
+                        HorizontalAlignment="Right" />
+                    <Border
+                        Grid.Row="4"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="3"
+                        BorderBrush="DarkGray"
+                        BorderThickness="1">
+                        <TextBlock
+                            x:Name="featuresSelectionResultsTextBlock"
+                            Height="150"
+                            Margin="5" />
+                    </Border>
+                </Grid>
+            </TabItem>
+            <TabItem BorderThickness="0" Header="Classifiers">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Button
+                        x:Name="classifiersOpenFileButton"
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Margin="0,0,15,15"
+                        Content="Open file" />
+                    <Button
+                        x:Name="classifiersTrainButton"
                         Grid.Row="0"
                         Grid.Column="1"
                         Margin="0,0,15,15"
                         Content="Train" />
                     <Button
+                        x:Name="classifiersExecuteButton"
                         Grid.Row="0"
                         Grid.Column="2"
                         Margin="0,0,15,15"
                         Content="Execute" />
-                    <ComboBox
+                    <Label
+                        x:Name="classifiersClassifiersLabel"
                         Grid.Row="1"
                         Grid.Column="0"
-                        Width="120"
+                        Height="28"
                         HorizontalAlignment="Left"
-                        VerticalAlignment="Top" />
-                    <Label
-                        Name="kLabel"
+                        Content="Classifiers:" />
+                    <ComboBox
+                        x:Name="classifiersClassifiersComboBox"
                         Grid.Row="1"
                         Grid.Column="1"
+                        Width="120"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        SelectedIndex="0">
+                        <ComboBoxItem Content="KNN" />
+                        <ComboBoxItem Content="KNM" />
+                    </ComboBox>
+                    <Label
+                        x:Name="classifiersKLabel"
+                        Grid.Row="2"
+                        Grid.Column="0"
                         Height="28"
                         HorizontalAlignment="Left"
                         Content="k:" />
                     <TextBox
-                        Name="kTextBox"
-                        Grid.Row="1"
-                        Grid.Column="2"
+                        x:Name="classifiersKTextBox"
+                        Grid.Row="2"
+                        Grid.Column="1"
                         Width="100"
                         Margin="0,10,0,10"
                         HorizontalAlignment="Right" />
                     <Label
-                        Name="trainingPartLabel"
-                        Grid.Row="2"
-                        Grid.Column="1"
+                        x:Name="classifiersTrainingPartLabel"
+                        Grid.Row="3"
+                        Grid.Column="0"
                         Height="28"
                         HorizontalAlignment="Left"
-                        Content="Training part:" />
+                        Content="Training part (%):" />
                     <TextBox
-                        Name="trainingPartTextBox"
-                        Grid.Row="2"
-                        Grid.Column="2"
+                        x:Name="classifiersTrainingPartTextBox"
+                        Grid.Row="3"
+                        Grid.Column="1"
                         Width="100"
                         Margin="0,10,0,10"
                         HorizontalAlignment="Right" />
-                    <TextBlock
-                        Grid.Row="3"
+                    <Border
+                        Grid.Row="4"
                         Grid.Column="0"
-                        Width="150"
-                        Height="150" />
+                        Grid.ColumnSpan="3"
+                        BorderBrush="DarkGray"
+                        BorderThickness="1">
+                        <TextBlock
+                            x:Name="classifiersResultsTextBlock"
+                            Height="150"
+                            Margin="5" />
+                    </Border>
                 </Grid>
             </TabItem>
         </TabControl>
