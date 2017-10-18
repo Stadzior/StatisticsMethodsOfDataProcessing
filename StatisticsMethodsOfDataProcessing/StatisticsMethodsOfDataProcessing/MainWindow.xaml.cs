@@ -28,7 +28,7 @@ namespace StatisticsMethodsOfDataProcessing
             InitializeComponent();
         }
 
-        private Matrix<double> Matrix { get; set; }
+        private IList<Matrix<double>> Matrices { get; set; }
 
         private void OpenFileButton_Click(object sender, RoutedEventArgs e)
         {
@@ -38,17 +38,20 @@ namespace StatisticsMethodsOfDataProcessing
                 string[] fileContent = null;
                 try
                 {
-                    fileContent = File.ReadAllLines(openFileDialog.FileName);
-                } catch (Exception)
+                    fileContent = File.ReadAllLines(openFileDialog.FileName);            
+                    if (fileContent != null && fileContent.Any())
+                    {
+                        Matrices = GetMatrices(fileContent);
+                        foreach (var matrix in Matrices)
+                        {
+                            ResultsTextBox.Text += $"\n\n{matrix.ToString()}";
+                        }
+                    }
+
+                }
+                catch (Exception)
                 {
                     ResultsTextBox.Text += $"\n File {openFileDialog.FileName} is broken or of not supported format.";
-                }
-                
-                if (fileContent != null && fileContent.Any())
-                {
-                    var matrixHeight = fileContent.Length;
-                    var matrixWidth = fileContent.First().Replace(" ", "").Length;
-                    //Matrix = Matrix<double>.Build.
                 }
             }
         }
@@ -58,6 +61,44 @@ namespace StatisticsMethodsOfDataProcessing
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             if (saveFileDialog.ShowDialog() == true)
                 File.WriteAllText(saveFileDialog.FileName, ResultsTextBox.Text);
+        }
+
+        private IList<Matrix<double>> GetMatrices(string[] fileContent)
+        {
+            var matrices = new List<Matrix<double>>();
+            List<string> singleMatrixContent = new List<string>();
+            foreach (var row in fileContent)
+            {
+                if (string.IsNullOrWhiteSpace(row))
+                {
+                    matrices.Add(GetMatrix(singleMatrixContent.ToArray()));
+                    singleMatrixContent.Clear();
+                }
+                else
+                    singleMatrixContent.Add(row);
+            }
+            return matrices;
+        }
+
+        private static Matrix<double> GetMatrix(string[] fileContent)
+        {
+            var matrixHeight = fileContent.Length;
+            var matrixWidth = fileContent
+                .First()
+                .Trim()
+                .Count(x => string.IsNullOrWhiteSpace(x.ToString())) + 1;
+
+            var matrix = Matrix<double>.Build.Dense(matrixHeight, matrixWidth);
+            foreach (var row in fileContent)
+            {
+                var splittedRow = row.Split(' ');
+                foreach (var item in splittedRow)
+                {
+                    matrix[Array.IndexOf(fileContent, row), Array.IndexOf(splittedRow, item)] = double.Parse(item);
+                }
+            }
+
+            return matrix;
         }
     }
 }
