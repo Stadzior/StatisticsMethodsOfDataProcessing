@@ -44,13 +44,13 @@ namespace StatisticsMethodsOfDataProcessing
                         Matrices = GetMatrices(fileContent);
                         foreach (var matrix in Matrices)
                         {
-                            ResultsTextBox.Text += $"\n{matrix.ToString()}";
+                            ResultsTextBox.AppendText($"\n{matrix.ToString()}");
                         }
                     }
                 }
                 catch (Exception)
                 {
-                    ResultsTextBox.Text += $"\n File {openFileDialog.FileName} is broken or of not supported format.";
+                    ResultsTextBox.AppendText($"\n File {openFileDialog.FileName} is broken or of not supported format.");
                 }
             }
         }
@@ -101,6 +101,11 @@ namespace StatisticsMethodsOfDataProcessing
             }
 
             return matrix;
+        }
+
+        private void ResultsTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ResultsTextBox.ScrollToEnd();
         }
     }
 }
