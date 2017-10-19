@@ -19,12 +19,23 @@ namespace StatisticsMethodsOfDataProcessing
                 if (matrices.Any(x => x.RowCount != matrixExpectedDimentions.Item1 || x.ColumnCount != matrixExpectedDimentions.Item2))
                     throw new InvalidOperationException("Matrices dimentions mismatched.");
 
-                //var fisher 
-                //for (int i = 0; i < matrix.RowCount; i++)
-                //{
-                //    var feature = 
-                //    var standardDeviation = Statistics.MeanStandardDeviation(feature);
-                //}
+                var features = new List<Feature>();
+                for (int i = 0; i < matrices.First().RowCount; i++)
+                {
+                    var feature = new Feature { Position = i };
+                    foreach (var matrix in matrices)
+                    {
+                        var resultTuple = Statistics.MeanStandardDeviation(matrix.Row(i));
+                        feature.Means.Add(resultTuple.Item1);
+                        feature.StandardDeviations.Add(resultTuple.Item2);
+                    }
+                    features.Add(feature);
+                }
+                return features
+                    .OrderByDescending(x => x.FisherFactor)
+                    .Take(featureCount)
+                    .Select(x => x.Position)
+                    .ToArray();
             }
             return null;
         }

@@ -66,6 +66,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Extensions.cs" />
+    <Compile Include="Feature.cs" />
     <Compile Include="FisherLinearDiscriminator.cs" />
     <Compile Include="Interfaces\IClassifier.cs" />
     <Compile Include="Interfaces\ILinearDiscriminator.cs" />

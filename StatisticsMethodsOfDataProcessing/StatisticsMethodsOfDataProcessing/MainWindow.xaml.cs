@@ -69,6 +69,31 @@ namespace StatisticsMethodsOfDataProcessing
             ResultsTextBox.ScrollToEnd();
         }
 
+
+        private void FeaturesSelectionComputeButton_Click(object sender, RoutedEventArgs e)
+        {
+            var computationResultBuilder = new StringBuilder("\nBest features in descending order: ");
+            var fisherDiscriminator = new FisherLinearDiscriminator();
+            var validFeatureCountInputted = int.TryParse(FeaturesSelectionFeaturesCountTextBox.Text, out int featureCount);
+
+            if (validFeatureCountInputted)
+            {
+                var discriminationResults = fisherDiscriminator.Discriminate(Matrices, int.Parse(FeaturesSelectionFeaturesCountTextBox.Text));
+                if (discriminationResults == null)
+                    ResultsTextBox.AppendText("There are no loaded matrices, use Open file button to load some data.");
+                else
+                {
+                    foreach (var featurePosition in discriminationResults)
+                        computationResultBuilder.Append($"{featurePosition}, ");
+                    computationResultBuilder.Remove(computationResultBuilder.Length - 2, 2);
+
+                    ResultsTextBox.AppendText(computationResultBuilder.ToString());
+                }
+            }
+            else
+                ResultsTextBox.AppendText($"Invalid feature count \"{FeaturesSelectionFeaturesCountTextBox.Text}\" inputted.");
+        }
+
         #endregion
 
         private IList<Matrix<double>> GetMatrices(string[] fileContent)
@@ -111,7 +136,5 @@ namespace StatisticsMethodsOfDataProcessing
 
             return matrix;
         }
-
-
     }
 }

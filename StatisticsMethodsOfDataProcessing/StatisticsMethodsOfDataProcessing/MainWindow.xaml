@@ -38,6 +38,7 @@
                         Grid.Row="0"
                         Grid.Column="0"
                         Margin="5"
+                        Click="FeaturesSelectionComputeButton_Click"
                         Content="Compute" />
                     <Label
                         x:Name="FeaturesSelectionFeaturesCountLabel"
@@ -53,7 +54,8 @@
                         Grid.Column="1"
                         Width="100"
                         Margin="0,10,0,10"
-                        HorizontalAlignment="Right" />
+                        HorizontalAlignment="Right"
+                        Text="1" />
                     <RadioButton
                         x:Name="FeaturesSelectionFisherRadioButton"
                         Grid.Row="2"
@@ -172,8 +174,9 @@
                 x:Name="ResultsTextBox"
                 Margin="5"
                 IsReadOnly="True"
+                TextChanged="ResultsTextBox_TextChanged"
                 TextWrapping="Wrap"
-                VerticalScrollBarVisibility="Visible" TextChanged="ResultsTextBox_TextChanged" />
+                VerticalScrollBarVisibility="Visible" />
         </Border>
     </Grid>
 </Window>
