@@ -30,6 +30,8 @@ namespace StatisticsMethodsOfDataProcessing
 
         private IList<Matrix<double>> Matrices { get; set; }
 
+        #region ("Event handlers")
+
         private void OpenFileButton_Click(object sender, RoutedEventArgs e)
         {
             var openFileDialog = new OpenFileDialog();
@@ -61,6 +63,13 @@ namespace StatisticsMethodsOfDataProcessing
             if (saveFileDialog.ShowDialog() == true)
                 File.WriteAllText(saveFileDialog.FileName, ResultsTextBox.Text);
         }
+
+        private void ResultsTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ResultsTextBox.ScrollToEnd();
+        }
+
+        #endregion
 
         private IList<Matrix<double>> GetMatrices(string[] fileContent)
         {
@@ -103,9 +112,6 @@ namespace StatisticsMethodsOfDataProcessing
             return matrix;
         }
 
-        private void ResultsTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            ResultsTextBox.ScrollToEnd();
-        }
+
     }
 }
