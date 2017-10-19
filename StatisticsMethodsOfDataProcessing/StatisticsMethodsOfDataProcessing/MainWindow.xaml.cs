@@ -44,10 +44,9 @@ namespace StatisticsMethodsOfDataProcessing
                         Matrices = GetMatrices(fileContent);
                         foreach (var matrix in Matrices)
                         {
-                            ResultsTextBox.Text += $"\n\n{matrix.ToString()}";
+                            ResultsTextBox.Text += $"\n{matrix.ToString()}";
                         }
                     }
-
                 }
                 catch (Exception)
                 {
@@ -66,6 +65,8 @@ namespace StatisticsMethodsOfDataProcessing
         private IList<Matrix<double>> GetMatrices(string[] fileContent)
         {
             var matrices = new List<Matrix<double>>();
+            if (!string.IsNullOrWhiteSpace(fileContent.Last()))
+                fileContent = fileContent.Union(new string[] { " " }).ToArray();
             List<string> singleMatrixContent = new List<string>();
             foreach (var row in fileContent)
             {
@@ -92,9 +93,10 @@ namespace StatisticsMethodsOfDataProcessing
             foreach (var row in fileContent)
             {
                 var splittedRow = row.Split(' ');
-                foreach (var item in splittedRow)
+                for (int i = 0; i < splittedRow.Length; i++)
                 {
-                    matrix[Array.IndexOf(fileContent, row), Array.IndexOf(splittedRow, item)] = double.Parse(item);
+                    var item = splittedRow[i];
+                    matrix[Array.IndexOf(fileContent, row), i] = double.Parse(item);
                 }
             }
 
