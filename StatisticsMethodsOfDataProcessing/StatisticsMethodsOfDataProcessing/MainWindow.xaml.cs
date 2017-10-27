@@ -28,7 +28,7 @@ namespace StatisticsMethodsOfDataProcessing
             InitializeComponent();
         }
 
-        private IList<Matrix<double>> Matrices { get; set; }
+        private IList<FeatureClass> FeatureClasses { get; set; }
 
         #region ("Event handlers")
 
@@ -43,10 +43,10 @@ namespace StatisticsMethodsOfDataProcessing
                     fileContent = File.ReadAllLines(openFileDialog.FileName);            
                     if (fileContent != null && fileContent.Any())
                     {
-                        Matrices = GetMatrices(fileContent);
-                        foreach (var matrix in Matrices)
+                        FeatureClasses = GetFeatureClasses(fileContent);
+                        foreach (var featureClass in FeatureClasses)
                         {
-                            ResultsTextBox.AppendText($"\n{matrix.ToString()}");
+                            ResultsTextBox.AppendText($"\n{featureClass.ToString()}");
                         }
                     }
                 }
@@ -78,7 +78,7 @@ namespace StatisticsMethodsOfDataProcessing
 
             if (validFeatureCountInputted)
             {
-                var discriminationResults = fisherDiscriminator.Discriminate(Matrices, int.Parse(FeaturesSelectionFeaturesCountTextBox.Text));
+                var discriminationResults = fisherDiscriminator.Discriminate(FeatureClasses, int.Parse(FeaturesSelectionFeaturesCountTextBox.Text));
                 if (discriminationResults == null)
                     ResultsTextBox.AppendText("There are no loaded matrices, use Open file button to load some data.");
                 else
@@ -96,9 +96,9 @@ namespace StatisticsMethodsOfDataProcessing
 
         #endregion
 
-        private IList<Matrix<double>> GetMatrices(string[] fileContent)
+        private IList<FeatureClass> GetFeatureClasses(string[] fileContent)
         {
-            var matrices = new List<Matrix<double>>();
+            var featureClasses = new List<FeatureClass>();
             if (!string.IsNullOrWhiteSpace(fileContent.Last()))
                 fileContent = fileContent.Union(new string[] { " " }).ToArray();
             List<string> singleMatrixContent = new List<string>();
@@ -106,13 +106,13 @@ namespace StatisticsMethodsOfDataProcessing
             {
                 if (string.IsNullOrWhiteSpace(row))
                 {
-                    matrices.Add(GetMatrix(singleMatrixContent.ToArray()));
+                    featureClasses.Add(new FeatureClass(GetMatrix(singleMatrixContent.ToArray())));
                     singleMatrixContent.Clear();
                 }
                 else
                     singleMatrixContent.Add(row);
             }
-            return matrices;
+            return featureClasses;
         }
 
         private static Matrix<double> GetMatrix(string[] fileContent)

@@ -11,23 +11,21 @@ namespace StatisticsMethodsOfDataProcessing
 {
     public class FisherLinearDiscriminator : ILinearDiscriminator
     {
-        public int[] Discriminate(IEnumerable<Matrix<double>> matrices, int featureCount)
+        public int[] Discriminate(IEnumerable<FeatureClass> matrices, int featureCount)
         {
             if (matrices != null && matrices.Any())
             {
-                var matrixExpectedDimentions = new Tuple<int, int>(matrices.First().RowCount, matrices.First().ColumnCount);
-                if (matrices.Any(x => x.RowCount != matrixExpectedDimentions.Item1 || x.ColumnCount != matrixExpectedDimentions.Item2))
-                    throw new InvalidOperationException("Matrices dimentions mismatched.");
+                var matrixExpectedDimensions = new Tuple<int, int>(matrices.First().Features.Count, matrices.First().SampleCount);
+                if (matrices.Any(x => x.Features.Count != matrixExpectedDimensions.Item1 || x.SampleCount != matrixExpectedDimensions.Item2))
+                    throw new InvalidOperationException("Matrices dimensions mismatched.");
 
-                var features = new List<Feature>();
+                var featureTuples = new List<Tuple<int, int>>();
                 for (int i = 0; i < matrices.First().RowCount; i++)
                 {
                     var feature = new Feature { Position = i };
                     foreach (var matrix in matrices)
                     {
                         var resultTuple = Statistics.MeanStandardDeviation(matrix.Row(i));
-                        feature.Means.Add(resultTuple.Item1);
-                        feature.StandardDeviations.Add(resultTuple.Item2);
                     }
                     features.Add(feature);
                 }

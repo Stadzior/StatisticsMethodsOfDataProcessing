@@ -66,7 +66,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Extensions.cs" />
-    <Compile Include="Feature.cs" />
+    <Compile Include="FeatureClass.cs" />
     <Compile Include="FisherLinearDiscriminator.cs" />
     <Compile Include="Interfaces\IClassifier.cs" />
     <Compile Include="Interfaces\ILinearDiscriminator.cs" />
@@ -101,6 +101,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Maple_Oak.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
