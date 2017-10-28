@@ -19,15 +19,12 @@ namespace StatisticsMethodsOfDataProcessing
                 if (matrices.Any(x => x.Features.Count != matrixExpectedDimensions.Item1 || x.SampleCount != matrixExpectedDimensions.Item2))
                     throw new InvalidOperationException("Matrices dimensions mismatched.");
 
+                if (featureCount < 1 || featureCount > matrices.First().Features.Count - 1)
+                    throw new InvalidOperationException("Feature count invalid.");
+
                 var featureTuples = new List<Tuple<int, int>>();
-                for (int i = 0; i < matrices.First().RowCount; i++)
+                for (int i = 0; i < matrices.First().Features.Count; i++)
                 {
-                    var feature = new Feature { Position = i };
-                    foreach (var matrix in matrices)
-                    {
-                        var resultTuple = Statistics.MeanStandardDeviation(matrix.Row(i));
-                    }
-                    features.Add(feature);
                 }
                 return features
                     .OrderByDescending(x => x.FisherFactor)
@@ -37,5 +34,6 @@ namespace StatisticsMethodsOfDataProcessing
             }
             return null;
         }
+
     }
 }
