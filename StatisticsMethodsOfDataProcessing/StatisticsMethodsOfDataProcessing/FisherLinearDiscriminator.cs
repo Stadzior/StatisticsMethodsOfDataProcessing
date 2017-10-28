@@ -11,29 +11,27 @@ namespace StatisticsMethodsOfDataProcessing
 {
     public class FisherLinearDiscriminator : ILinearDiscriminator
     {
-        public int[] Discriminate(IEnumerable<FeatureClass> matrices, int featureCount)
+  
+        public int[] Discriminate(IEnumerable<FeatureClass> featureClasses, int featureCount)
         {
-            if (matrices != null && matrices.Any())
+            if (featureClasses != null && featureClasses.Any())
             {
-                var matrixExpectedDimensions = new Tuple<int, int>(matrices.First().Features.Count, matrices.First().SampleCount);
-                if (matrices.Any(x => x.Features.Count != matrixExpectedDimensions.Item1 || x.SampleCount != matrixExpectedDimensions.Item2))
+                var matrixExpectedDimensions = new Tuple<int, int>(featureClasses.First().Features.Count, featureClasses.First().SampleCount);
+                if (featureClasses.Any(x => x.Features.Count != matrixExpectedDimensions.Item1 || x.SampleCount != matrixExpectedDimensions.Item2))
                     throw new InvalidOperationException("Matrices dimensions mismatched.");
 
-                if (featureCount < 1 || featureCount > matrices.First().Features.Count - 1)
+                if (featureCount < 1 || featureCount > featureClasses.First().Features.Count - 1)
                     throw new InvalidOperationException("Feature count invalid.");
 
-                var featureTuples = new List<Tuple<int, int>>();
-                for (int i = 0; i < matrices.First().Features.Count; i++)
-                {
-                }
-                return features
-                    .OrderByDescending(x => x.FisherFactor)
-                    .Take(featureCount)
-                    .Select(x => x.Position)
-                    .ToArray();
+                var permutations = featureClasses.First().Matrix.GetAllRowsPermutations(featureCount);
+                
             }
             return null;
         }
 
+        public double GetFisherFactor(Matrix<double> source)
+        {
+            return 0;
+        }
     }
 }

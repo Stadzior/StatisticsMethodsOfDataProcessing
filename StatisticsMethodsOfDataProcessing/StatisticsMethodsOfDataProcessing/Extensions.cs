@@ -17,20 +17,60 @@ namespace StatisticsMethodsOfDataProcessing
             return result;
         }
 
-        public static IEnumerable<Tuple<T,T>> GetAllCombinations<T>(IEnumerable<T> source)
+        public static IEnumerable<IEnumerable<int>> GetAllRowsPermutations<T>(this Matrix<T> source, int combinationSize) where T : struct, IEquatable<T>, IFormattable
         {
-            var combinationTuples = new List<Tuple<T, T>>();
+            var rowIndices = new int[source.RowCount];
+            for (int i = 0; i < rowIndices.Length; i++)
+                rowIndices[i] = i+1;
+
+            return rowIndices.GetAllPermutations(combinationSize);
+        }
+
+        public static IEnumerable<IEnumerable<T>> GetAllPermutations<T>(this IEnumerable<T> source, int combinationSize)
+        {
+            if (combinationSize < 1 || combinationSize > source.Count())
+                throw new ArgumentException("Combination size is invalid.");
+
+            List<List<T>> combinations = new List<List<T>>();
             foreach (var item in source)
             {
-                foreach (var item2 in source.Where(x => !item.Equals(x)))
+                if (combinationSize > 1)
                 {
-                    if (!combinationTuples.Any(x =>
-                    (x.Item1.Equals(item) && x.Item2.Equals(item2)) ||
-                    (x.Item1.Equals(item2) && x.Item2.Equals(item))))
-                        combinationTuples.Add(new Tuple<T, T>(item, item2));
+                    foreach (var nestedItems in source.Where(x => !x.Equals(item)).GetAllPermutations(combinationSize - 1))
+                    {
+                        var combination = new List<T> { item };
+                        combination.AddRange(nestedItems);
+                        if (!combinations.Any(x => x.Count() == combination.Count() && x.All(y => combination.Contains(y))))
+                            combinations.Add(combination);
+                    }
+                }
+                else
+                {
+                    foreach (var item2 in source)
+                    {
+                        if (!combinations.Select(x => x.First()).Contains(item2))
+                            combinations.Add(new List<T> { item2 });
+                    }
                 }
             }
-            return combinationTuples;
+
+            return combinations;
         }
+
+        public static Matrix<double> CovarianceMatrix(this Matrix<double> source)
+        {
+            var meansMatrix = Matrix<double>.Build.Dense(source.RowCount, source.ColumnCount);
+            foreach (var feature in source.AsVectors())
+            {
+                var featureMean = feature.Mean();
+                for (int i = 0; i < feature.Count; i++)
+                    meansMatrix[source.AsVectors().IndexOf(feature), i] = featureMean;
+            }
+
+            var differenceMatrix = source - meansMatrix;
+            return differenceMatrix * differenceMatrix.Transpose() / source.ColumnCount;           
+        }
+
+        public static double Mean(this Vector<double> source) => source.Sum() / source.Count;
     }
 }

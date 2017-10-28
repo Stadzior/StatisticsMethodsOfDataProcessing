@@ -18,5 +18,11 @@ namespace StatisticsMethodsOfDataProcessing
         {
             Matrix = matrix;
         }
+
+        public override string ToString()
+            => new StringBuilder(Name)
+                .AppendLine()
+                .Append(Matrix.ToString())
+                .ToString();
     }
 }
