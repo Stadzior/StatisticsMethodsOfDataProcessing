@@ -86,8 +86,8 @@ namespace StatisticsMethodsOfDataProcessing
                     ResultsTextBox.AppendText("There is no class loaded, use Open file button to load some data.");
                 else
                 {
-                    foreach (var featurePosition in discriminationResults)
-                        computationResultBuilder.Append($"{featurePosition}, ");
+                    foreach (var fisherFactorTuple in discriminationResults)
+                        computationResultBuilder.Append($"{fisherFactorTuple.Item2}, ");
                     computationResultBuilder.Remove(computationResultBuilder.Length - 2, 2);
 
                     ResultsTextBox.AppendText(computationResultBuilder.ToString());

@@ -12,7 +12,7 @@ namespace StatisticsMethodsOfDataProcessing
     public class FisherLinearDiscriminator : ILinearDiscriminator
     {
   
-        public int[] Discriminate(IEnumerable<FeatureClass> featureClasses, int featureCount)
+        public IEnumerable<Tuple<IEnumerable<int>, double>> Discriminate(IList<FeatureClass> featureClasses, int featureCount)
         {
             if (featureClasses != null && featureClasses.Any())
             {
@@ -23,15 +23,26 @@ namespace StatisticsMethodsOfDataProcessing
                 if (featureCount < 1 || featureCount > featureClasses.First().Features.Count - 1)
                     throw new InvalidOperationException("Feature count invalid.");
 
-                var permutations = featureClasses.First().Matrix.GetAllRowsPermutations(featureCount);
-                
+                var fisherFactorTuples = new List<Tuple<IEnumerable<int>, double>>();
+                foreach (var permutation in featureClasses.First().Matrix.GetAllRowsPermutations(featureCount))
+                    fisherFactorTuples.Add(new Tuple<IEnumerable<int>, double>(permutation, GetFisherFactor(featureClasses, permutation)));
+
+                return fisherFactorTuples;
             }
-            return null;
+            else
+                return null;
         }
 
-        public double GetFisherFactor(Matrix<double> source)
+        private static double GetFisherFactor(IList<FeatureClass> featureClasses, IList<int> permutation)
         {
-            return 0;
+            var numerator = featureClasses.MeansMatrix().CovarianceMatrix().Determinant();
+            var denominator = featureClasses
+                .Select(x => x.Matrix.SubMatrix(permutation)
+                .CovarianceMatrix()
+                .Determinant())
+                .Sum();
+            var fisherFactor = numerator / denominator;
+            return fisherFactor;
         }
     }
 }

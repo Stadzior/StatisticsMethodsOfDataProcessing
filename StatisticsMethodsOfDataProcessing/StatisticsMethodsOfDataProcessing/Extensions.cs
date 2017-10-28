@@ -17,16 +17,16 @@ namespace StatisticsMethodsOfDataProcessing
             return result;
         }
 
-        public static IEnumerable<IEnumerable<int>> GetAllRowsPermutations<T>(this Matrix<T> source, int combinationSize) where T : struct, IEquatable<T>, IFormattable
+        public static IEnumerable<IList<int>> GetAllRowsPermutations<T>(this Matrix<T> source, int combinationSize) where T : struct, IEquatable<T>, IFormattable
         {
             var rowIndices = new int[source.RowCount];
             for (int i = 0; i < rowIndices.Length; i++)
-                rowIndices[i] = i+1;
+                rowIndices[i] = i;
 
             return rowIndices.GetAllPermutations(combinationSize);
         }
 
-        public static IEnumerable<IEnumerable<T>> GetAllPermutations<T>(this IEnumerable<T> source, int combinationSize)
+        public static IEnumerable<IList<T>> GetAllPermutations<T>(this IEnumerable<T> source, int combinationSize)
         {
             if (combinationSize < 1 || combinationSize > source.Count())
                 throw new ArgumentException("Combination size is invalid.");
@@ -68,9 +68,56 @@ namespace StatisticsMethodsOfDataProcessing
             }
 
             var differenceMatrix = source - meansMatrix;
-            return differenceMatrix * differenceMatrix.Transpose() / source.ColumnCount;           
+            return differenceMatrix * differenceMatrix.Transpose() / source.ColumnCount;
         }
 
-        public static double Mean(this Vector<double> source) => source.Sum() / source.Count;
+        public static double Mean(this Vector<double> source)
+            => source.Sum() / source.Count;
+
+        public static Matrix<double> MeansMatrix(this IList<FeatureClass> source)
+        {
+            if (source != null && source.Any())
+            {
+                var matrixExpectedDimensions = new Tuple<int, int>(source.First().Features.Count, source.First().SampleCount);
+                if (source.Any(x => x.Features.Count != matrixExpectedDimensions.Item1 || x.SampleCount != matrixExpectedDimensions.Item2))
+                    throw new InvalidOperationException("Matrices dimensions mismatched.");
+
+                var meansMatrix = Matrix<double>.Build.Dense(source.First().Features.Count, source.Count());
+                for (int i = 0; i < source.First().Features.Count; i++)
+                {
+                    for (int j = 0; j < source.Count(); j++)
+                    {
+                        meansMatrix[i, j] = source[j].Features[i].Mean();
+                    }
+                }
+                return meansMatrix;
+            }
+            else
+                return null;
+        }
+
+        public static Matrix<T> SubMatrix<T>(this Matrix<T> source, IList<int> rowsIndices = null, IList<int> columnsIndices = null) where T : struct, IEquatable<T>, IFormattable
+        {
+            if (rowsIndices == null)
+            {
+                rowsIndices = new List<int>();
+                for (int i = 0; i < source.RowCount; i++)
+                    rowsIndices.Add(i);
+            }
+
+            if (columnsIndices == null)
+            {
+                columnsIndices = new List<int>();
+                for (int i = 0; i < source.ColumnCount; i++)
+                    columnsIndices.Add(i);
+            }
+
+            var subMatrix = Matrix<T>.Build.Dense(rowsIndices.Count(), columnsIndices.Count());
+            for (int i = 0; i < rowsIndices.Count(); i++)
+                for (int j = 0; j < columnsIndices.Count(); j++)
+                    subMatrix[i, j] = source[rowsIndices.ElementAt(i), columnsIndices.ElementAt(j)];
+
+            return subMatrix;
+        }
     }
 }
