@@ -107,12 +107,12 @@ namespace StatisticsMethodsOfDataProcessing
         private IList<FeatureClass> GetFeatureClasses(string[] fileContent)
         {
             var featureClasses = new List<FeatureClass>();
-            if (!string.IsNullOrWhiteSpace(fileContent.Last()))
-                fileContent = fileContent.Union(new string[] { " " }).ToArray();
+            //if (!string.IsNullOrWhiteSpace(fileContent.Last()))
+            //    fileContent = fileContent.Union(new string[] { " " }).ToArray();
             List<string> singleMatrixContent = new List<string>();
             foreach (var row in fileContent)
             {
-                if (string.IsNullOrWhiteSpace(row))
+                if (row.Contains("#"))
                 {
                     featureClasses.Add(new FeatureClass(GetMatrix(singleMatrixContent.ToArray())));
                     singleMatrixContent.Clear();
