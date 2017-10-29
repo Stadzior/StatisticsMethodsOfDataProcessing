@@ -92,7 +92,7 @@ namespace StatisticsMethodsOfDataProcessing
                         foreach (var featurePosition in discriminationResults)
                             computationResultBuilder.Append($"{featurePosition}, ");
                         computationResultBuilder.Remove(computationResultBuilder.Length - 2, 2);
-                        computationResultBuilder.AppendLine($"\tElapsed seconds: {watch.Elapsed.Seconds}");
+                        computationResultBuilder.AppendLine($"\tElapsed time: {watch.Elapsed.Minutes} min {watch.Elapsed.Seconds} s");
                         ResultsTextBox.AppendText(computationResultBuilder.ToString());
                     }
                 }

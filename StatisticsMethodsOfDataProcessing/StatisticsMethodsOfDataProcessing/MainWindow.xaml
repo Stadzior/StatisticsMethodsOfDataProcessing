@@ -11,9 +11,10 @@
     mc:Ignorable="d">
     <Grid x:Name="ParentGrid">
         <Grid.RowDefinitions>
-            <RowDefinition Height="4*" />
+            <RowDefinition Height="3*" />
             <RowDefinition Height="*" />
             <RowDefinition Height="5*" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <TabControl
             Grid.Row="0"
@@ -178,5 +179,16 @@
                 TextWrapping="Wrap"
                 VerticalScrollBarVisibility="Visible" />
         </Border>
+        <Grid Grid.Row="3">
+            <ProgressBar
+                x:Name="ProgressBar"
+                Grid.Row="3"
+                Margin="15" />
+            <TextBlock
+                x:Name="ProgressBarTextBlock"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Text="" />
+        </Grid>
     </Grid>
 </Window>
