@@ -12,7 +12,7 @@ namespace StatisticsMethodsOfDataProcessing
     public class FisherLinearDiscriminator : ILinearDiscriminator
     {
   
-        public IEnumerable<Tuple<IEnumerable<int>, double>> Discriminate(IList<FeatureClass> featureClasses, int featureCount)
+        public IEnumerable<int> Discriminate(IList<FeatureClass> featureClasses, int featureCount)
         {
             if (featureClasses != null && featureClasses.Any())
             {
@@ -20,14 +20,22 @@ namespace StatisticsMethodsOfDataProcessing
                 if (featureClasses.Any(x => x.Features.Count != matrixExpectedDimensions.Item1 || x.SampleCount != matrixExpectedDimensions.Item2))
                     throw new InvalidOperationException("Matrices dimensions mismatched.");
 
-                if (featureCount < 1 || featureCount > featureClasses.First().Features.Count - 1)
+                if (featureCount < 1 || featureCount > featureClasses.First().Features.Count)
                     throw new InvalidOperationException("Feature count invalid.");
 
-                var fisherFactorTuples = new List<Tuple<IEnumerable<int>, double>>();
-                foreach (var permutation in featureClasses.First().Matrix.GetAllRowsPermutations(featureCount))
-                    fisherFactorTuples.Add(new Tuple<IEnumerable<int>, double>(permutation, GetFisherFactor(featureClasses, permutation)));
+                if (featureCount == featureClasses.First().Features.Count)
+                    return featureClasses.First().Matrix.GetRowsIndices();
+                else
+                {
+                    var fisherFactorTuples = new List<Tuple<IEnumerable<int>, double>>();
+                    foreach (var permutation in featureClasses.First().Matrix.GetRowsIndices().GetAllPermutations(featureCount))
+                        fisherFactorTuples.Add(new Tuple<IEnumerable<int>, double>(permutation, GetFisherFactor(featureClasses, permutation)));
 
-                return fisherFactorTuples;
+                    return fisherFactorTuples
+                        .OrderByDescending(x => x.Item2)
+                        .First()
+                        .Item1;
+                }
             }
             else
                 return null;
@@ -35,12 +43,18 @@ namespace StatisticsMethodsOfDataProcessing
 
         private static double GetFisherFactor(IList<FeatureClass> featureClasses, IList<int> permutation)
         {
-            var numerator = featureClasses.MeansMatrix().CovarianceMatrix().Determinant();
+            var numerator = featureClasses
+                .MeansMatrix()
+                .SubMatrix(permutation)
+                .CovarianceMatrix()
+                .Determinant();
+
             var denominator = featureClasses
                 .Select(x => x.Matrix.SubMatrix(permutation)
                 .CovarianceMatrix()
                 .Determinant())
                 .Sum();
+
             var fisherFactor = numerator / denominator;
             return fisherFactor;
         }

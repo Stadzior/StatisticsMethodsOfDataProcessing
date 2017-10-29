@@ -9,6 +9,6 @@ namespace StatisticsMethodsOfDataProcessing.Interfaces
 {
     public interface ILinearDiscriminator
     {
-        IEnumerable<Tuple<IEnumerable<int>,double>> Discriminate(IList<FeatureClass> matrix, int featureCount);
+        IEnumerable<int> Discriminate(IList<FeatureClass> matrix, int featureCount);
     }
 }

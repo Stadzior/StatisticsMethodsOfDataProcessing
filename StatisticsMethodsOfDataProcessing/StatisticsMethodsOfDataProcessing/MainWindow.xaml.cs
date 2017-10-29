@@ -75,22 +75,27 @@ namespace StatisticsMethodsOfDataProcessing
 
         private void FeaturesSelectionComputeButton_Click(object sender, RoutedEventArgs e)
         {
-            var computationResultBuilder = new StringBuilder("\nBest features in descending order: ");
-            var fisherDiscriminator = new FisherLinearDiscriminator();
             var validFeatureCountInputted = int.TryParse(FeaturesSelectionFeaturesCountTextBox.Text, out int featureCount);
-
             if (validFeatureCountInputted)
             {
-                var discriminationResults = fisherDiscriminator.Discriminate(FeatureClasses, int.Parse(FeaturesSelectionFeaturesCountTextBox.Text));
-                if (discriminationResults == null)
-                    ResultsTextBox.AppendText("There is no class loaded, use Open file button to load some data.");
-                else
+                var computationResultBuilder = new StringBuilder($"\nBest {featureCount} features: ");
+                try
                 {
-                    foreach (var fisherFactorTuple in discriminationResults)
-                        computationResultBuilder.Append($"{fisherFactorTuple.Item2}, ");
-                    computationResultBuilder.Remove(computationResultBuilder.Length - 2, 2);
+                    var discriminationResults = new FisherLinearDiscriminator().Discriminate(FeatureClasses, int.Parse(FeaturesSelectionFeaturesCountTextBox.Text));
+                    if (discriminationResults == null)
+                        ResultsTextBox.AppendText("There is no class loaded, use Open file button to load some data.");
+                    else
+                    {
+                        foreach (var featurePosition in discriminationResults)
+                            computationResultBuilder.Append($"{featurePosition}, ");
+                        computationResultBuilder.Remove(computationResultBuilder.Length - 2, 2);
 
-                    ResultsTextBox.AppendText(computationResultBuilder.ToString());
+                        ResultsTextBox.AppendText(computationResultBuilder.ToString());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ResultsTextBox.AppendText($"\nError occured while computing: {ex.Message}.");
                 }
             }
             else

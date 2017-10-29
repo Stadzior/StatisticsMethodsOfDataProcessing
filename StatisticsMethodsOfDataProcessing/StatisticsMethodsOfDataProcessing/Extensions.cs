@@ -17,13 +17,12 @@ namespace StatisticsMethodsOfDataProcessing
             return result;
         }
 
-        public static IEnumerable<IList<int>> GetAllRowsPermutations<T>(this Matrix<T> source, int combinationSize) where T : struct, IEquatable<T>, IFormattable
+        public static IEnumerable<int> GetRowsIndices<T>(this Matrix<T> source) where T : struct, IEquatable<T>, IFormattable
         {
             var rowIndices = new int[source.RowCount];
             for (int i = 0; i < rowIndices.Length; i++)
                 rowIndices[i] = i;
-
-            return rowIndices.GetAllPermutations(combinationSize);
+            return rowIndices;
         }
 
         public static IEnumerable<IList<T>> GetAllPermutations<T>(this IEnumerable<T> source, int combinationSize)
