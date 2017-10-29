@@ -14,11 +14,6 @@ namespace StatisticsMethodsOfDataProcessing
         public IList<Vector<double>> Features => Matrix.AsVectors();
         public int SampleCount => Matrix.ColumnCount;
 
-        public FeatureClass(Matrix<double> matrix)
-        {
-            Matrix = matrix;
-        }
-
         public override string ToString()
             => new StringBuilder(Name)
                 .AppendLine()

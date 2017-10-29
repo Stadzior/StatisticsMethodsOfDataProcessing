@@ -2,6 +2,7 @@
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -81,7 +82,9 @@ namespace StatisticsMethodsOfDataProcessing
                 var computationResultBuilder = new StringBuilder($"\nBest {featureCount} features: ");
                 try
                 {
+                    var watch = Stopwatch.StartNew();
                     var discriminationResults = new FisherLinearDiscriminator().Discriminate(FeatureClasses, int.Parse(FeaturesSelectionFeaturesCountTextBox.Text));
+                    watch.Stop();
                     if (discriminationResults == null)
                         ResultsTextBox.AppendText("There is no class loaded, use Open file button to load some data.");
                     else
@@ -89,7 +92,7 @@ namespace StatisticsMethodsOfDataProcessing
                         foreach (var featurePosition in discriminationResults)
                             computationResultBuilder.Append($"{featurePosition}, ");
                         computationResultBuilder.Remove(computationResultBuilder.Length - 2, 2);
-
+                        computationResultBuilder.AppendLine($"\tElapsed seconds: {watch.Elapsed.Seconds}");
                         ResultsTextBox.AppendText(computationResultBuilder.ToString());
                     }
                 }
@@ -107,18 +110,31 @@ namespace StatisticsMethodsOfDataProcessing
         private IList<FeatureClass> GetFeatureClasses(string[] fileContent)
         {
             var featureClasses = new List<FeatureClass>();
-            //if (!string.IsNullOrWhiteSpace(fileContent.Last()))
-            //    fileContent = fileContent.Union(new string[] { " " }).ToArray();
-            List<string> singleMatrixContent = new List<string>();
-            foreach (var row in fileContent)
+            var splittedRows = fileContent.Select(x => x.Split(','));
+            var classNames = splittedRows.Select(x => x[0]).Distinct();
+            var sampleCount = splittedRows
+                .Select(x => x.Except(new string[] { x[0] }).Count())
+                .Min();
+
+            foreach (var className in classNames)
             {
-                if (row.Contains("#"))
+                var features = splittedRows.Where(x => x[0].Equals(className)).ToList();
+                var featureClass = new FeatureClass
                 {
-                    featureClasses.Add(new FeatureClass(GetMatrix(singleMatrixContent.ToArray())));
-                    singleMatrixContent.Clear();
+                    Name = className,
+                    Matrix = Matrix<double>.Build.Dense(features.Count(), sampleCount)
+                };
+
+                for (int i = 0; i < features.Count(); i++)
+                {
+                    var featureData = features[i].Except(new string[] { className }).ToList();
+                    for (int j = 0; j < sampleCount; j++)
+                    {
+                        var sample = featureData[j];
+                        featureClass.Matrix[i, j] = double.Parse(sample.Replace('.',','));
+                    }
                 }
-                else
-                    singleMatrixContent.Add(row);
+                featureClasses.Add(featureClass);
             }
             return featureClasses;
         }
@@ -134,7 +150,7 @@ namespace StatisticsMethodsOfDataProcessing
             var matrix = Matrix<double>.Build.Dense(matrixHeight, matrixWidth);
             foreach (var row in fileContent)
             {
-                var splittedRow = row.Split(' ');
+                var splittedRow = row.Split(',');
                 for (int i = 0; i < splittedRow.Length; i++)
                 {
                     var item = splittedRow[i];
