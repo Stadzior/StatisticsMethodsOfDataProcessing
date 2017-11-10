@@ -70,6 +70,7 @@
     <Compile Include="FisherLinearDiscriminator.cs" />
     <Compile Include="Interfaces\IClassifier.cs" />
     <Compile Include="Interfaces\ILinearDiscriminator.cs" />
+    <Compile Include="KNearestMeansClassifier.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

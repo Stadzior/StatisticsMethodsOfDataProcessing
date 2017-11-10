@@ -8,5 +8,6 @@ namespace StatisticsMethodsOfDataProcessing.Interfaces
 {
     public interface IClassifier
     {
+        IEnumerable<FeatureClass> Classify(FeatureClass sourceClass);
     }
 }
