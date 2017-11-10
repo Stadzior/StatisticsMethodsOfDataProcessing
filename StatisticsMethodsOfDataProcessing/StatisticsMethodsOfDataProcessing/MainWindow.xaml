@@ -61,6 +61,7 @@
                         x:Name="FeaturesSelectionFisherRadioButton"
                         Grid.Row="2"
                         Grid.Column="0"
+                        Checked="FeaturesSelectionRadioButton_Checked"
                         Content="Fisher"
                         IsChecked="True" />
                     <RadioButton
@@ -68,6 +69,7 @@
                         Grid.Row="2"
                         Grid.Column="1"
                         Margin="0,0,0,10"
+                        Checked="FeaturesSelectionRadioButton_Checked"
                         Content="SFS" />
                 </Grid>
             </TabItem>

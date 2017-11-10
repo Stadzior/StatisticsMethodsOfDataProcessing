@@ -88,10 +88,10 @@ namespace StatisticsMethodsOfDataProcessing
                     IEnumerable<int> discriminationResults;
                     switch (SelectedAlgorithm)
                     {
-                        case FeatureSelectionAlgorithm.Default:
+                        case FeatureSelectionAlgorithm.SFS:
                             discriminationResults = new FisherLinearDiscriminator().DiscriminateWithSequentialForwardSelection(FeatureClasses, int.Parse(FeaturesSelectionFeaturesCountTextBox.Text));
                             break;
-                        case FeatureSelectionAlgorithm.SFS:
+                        case FeatureSelectionAlgorithm.Default:
                         default:
                             discriminationResults = new FisherLinearDiscriminator().Discriminate(FeatureClasses, int.Parse(FeaturesSelectionFeaturesCountTextBox.Text));
                             break;
@@ -104,7 +104,7 @@ namespace StatisticsMethodsOfDataProcessing
                         foreach (var featurePosition in discriminationResults)
                             computationResultBuilder.Append($"{featurePosition}, ");
                         computationResultBuilder.Remove(computationResultBuilder.Length - 2, 2);
-                        computationResultBuilder.AppendLine($"\tElapsed time: {watch.Elapsed.Minutes} min {watch.Elapsed.Seconds} s");
+                        computationResultBuilder.AppendLine($"\t{SelectedAlgorithm.ToString()}\tElapsed time: {watch.Elapsed.Minutes} min {watch.Elapsed.Seconds} s");
                         ResultsTextBox.AppendText(computationResultBuilder.ToString());
                     }
                 }
