@@ -10,8 +10,7 @@ using MathNet.Numerics.Statistics;
 namespace StatisticsMethodsOfDataProcessing
 {
     public class FisherLinearDiscriminator : ILinearDiscriminator
-    {
-  
+    { 
         public IEnumerable<int> Discriminate(IList<FeatureClass> featureClasses, int featureCount)
         {
             if (featureClasses != null && featureClasses.Any())

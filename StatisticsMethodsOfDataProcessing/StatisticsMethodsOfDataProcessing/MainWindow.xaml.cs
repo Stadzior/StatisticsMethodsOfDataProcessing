@@ -31,6 +31,8 @@ namespace StatisticsMethodsOfDataProcessing
 
         private IList<FeatureClass> FeatureClasses { get; set; }
 
+        private FeatureSelectionAlgorithm SelectedAlgorithm = FeatureSelectionAlgorithm.Default;
+
         #region ("Event handlers")
 
         private void OpenFileButton_Click(object sender, RoutedEventArgs e)
@@ -83,7 +85,17 @@ namespace StatisticsMethodsOfDataProcessing
                 try
                 {
                     var watch = Stopwatch.StartNew();
-                    var discriminationResults = new FisherLinearDiscriminator().Discriminate(FeatureClasses, int.Parse(FeaturesSelectionFeaturesCountTextBox.Text));
+                    IEnumerable<int> discriminationResults;
+                    switch (SelectedAlgorithm)
+                    {
+                        case FeatureSelectionAlgorithm.Default:
+                            discriminationResults = new FisherLinearDiscriminator().DiscriminateWithSequentialForwardSelection(FeatureClasses, int.Parse(FeaturesSelectionFeaturesCountTextBox.Text));
+                            break;
+                        case FeatureSelectionAlgorithm.SFS:
+                        default:
+                            discriminationResults = new FisherLinearDiscriminator().Discriminate(FeatureClasses, int.Parse(FeaturesSelectionFeaturesCountTextBox.Text));
+                            break;
+                    }
                     watch.Stop();
                     if (discriminationResults == null)
                         ResultsTextBox.AppendText("There is no class loaded, use Open file button to load some data.");
@@ -159,6 +171,14 @@ namespace StatisticsMethodsOfDataProcessing
             }
 
             return matrix;
+        }
+
+        private void FeaturesSelectionRadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            if (FeaturesSelectionFisherRadioButton.IsChecked ?? false)
+                SelectedAlgorithm = FeatureSelectionAlgorithm.Default;
+            else if (FeaturesSelectionSFSRadioButton.IsChecked ?? false)
+                SelectedAlgorithm = FeatureSelectionAlgorithm.SFS;              
         }
     }
 }
