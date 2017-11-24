@@ -101,15 +101,16 @@
                         HorizontalAlignment="Left"
                         Content="Classifier:" />
                     <ComboBox
-                        x:Name="SimpleClassificationSimpleClassificationComboBox"
+                        x:Name="SimpleClassificationClassifierComboBox"
                         Grid.Row="1"
                         Grid.Column="1"
                         Width="120"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         SelectedIndex="0">
-                        <ComboBoxItem Content="KNN" />
-                        <ComboBoxItem Content="KNM" />
+                        <ComboBoxItem Content="Nearest neighbours" />
+                        <ComboBoxItem Content="Nearest means" />
+                        <ComboBoxItem Content="Nearest means with dispertion (Mahalonobis)" />
                     </ComboBox>
                     <Label
                         x:Name="SimpleClassificationKLabel"
@@ -174,15 +175,16 @@
                         HorizontalAlignment="Left"
                         Content="Classifier:" />
                     <ComboBox
-                        x:Name="ClassifiersClassifiersComboBox"
+                        x:Name="ClassifiersClassifierComboBox"
                         Grid.Row="1"
                         Grid.Column="1"
                         Width="120"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         SelectedIndex="0">
-                        <ComboBoxItem Content="KNN" />
-                        <ComboBoxItem Content="KNM" />
+                        <ComboBoxItem Content="Nearest neighbours" />
+                        <ComboBoxItem Content="Nearest means" />
+                        <ComboBoxItem Content="Nearest means with dispertion (Mahalonobis)" />
                     </ComboBox>
                     <Label
                         x:Name="ClassifiersKLabel"

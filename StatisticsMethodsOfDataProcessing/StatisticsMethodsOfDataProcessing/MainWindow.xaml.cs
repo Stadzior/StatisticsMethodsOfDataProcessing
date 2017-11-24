@@ -1,21 +1,17 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
 using Microsoft.Win32;
+using StatisticsMethodsOfDataProcessing.Enums;
+using StatisticsMethodsOfDataProcessing.MinimalDistanceMethods;
+using StatisticsMethodsOfDataProcessing.MinimalDistanceMethods.Interfaces;
+using StatisticsMethodsOfDataProcessing.Model;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace StatisticsMethodsOfDataProcessing
 {
@@ -117,6 +113,45 @@ namespace StatisticsMethodsOfDataProcessing
                 ResultsTextBox.AppendText($"Invalid feature count \"{FeaturesSelectionFeaturesCountTextBox.Text}\" inputted.");
         }
 
+        private void FeaturesSelectionRadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            if (FeaturesSelectionFisherRadioButton.IsChecked ?? false)
+                SelectedAlgorithm = FeatureSelectionAlgorithm.Default;
+            else if (FeaturesSelectionSFSRadioButton.IsChecked ?? false)
+                SelectedAlgorithm = FeatureSelectionAlgorithm.SFS;
+        }
+
+        private void SimpleClassificationClassifyButton_Click(object sender, RoutedEventArgs e)
+        {
+            Vector<double> sample = null;
+            int k = 1;
+            try
+            {
+                sample = Vector<double>.Build.DenseOfEnumerable(SimpleClassificationSampleTextBox.Text.Split(',').Select(x => double.Parse(x)));
+                k = int.Parse(SimpleClassificationKTextBox.Text);
+            }
+            catch (Exception)
+            {
+                ResultsTextBox.AppendText("Incorrect format of sample or k use:\n double,double,double... e.g. 1.023,34.232,43.123 for sample\ninteger for k");
+            }
+
+            IClassifier classifier = null;
+            switch ((ClassifyingMethod)SimpleClassificationClassifierComboBox.SelectedIndex)
+            {
+                case ClassifyingMethod.NearestNeighbours:
+                    classifier = new NearestNeighboursClassifier();
+                    break;
+                case ClassifyingMethod.NearestMeans:
+                    classifier = new NearestMeansClassifier();
+                    break;
+                case ClassifyingMethod.NearestMeansWithDispertion:
+                    classifier = new NearestMeansWithDispertionClassifier();
+                    break;
+            }
+            var classificationResultClassName = classifier.Classify(sample, FeatureClasses, k);
+            ResultsTextBox.AppendText($"Sample has been classified to class: {classificationResultClassName}");
+        }
+
         #endregion
 
         private IList<FeatureClass> GetFeatureClasses(string[] fileContent)
@@ -171,19 +206,6 @@ namespace StatisticsMethodsOfDataProcessing
             }
 
             return matrix;
-        }
-
-        private void FeaturesSelectionRadioButton_Checked(object sender, RoutedEventArgs e)
-        {
-            if (FeaturesSelectionFisherRadioButton.IsChecked ?? false)
-                SelectedAlgorithm = FeatureSelectionAlgorithm.Default;
-            else if (FeaturesSelectionSFSRadioButton.IsChecked ?? false)
-                SelectedAlgorithm = FeatureSelectionAlgorithm.SFS;              
-        }
-
-        private void SimpleClassificationClassifyButton_Click(object sender, RoutedEventArgs e)
-        {
-
         }
     }
 }

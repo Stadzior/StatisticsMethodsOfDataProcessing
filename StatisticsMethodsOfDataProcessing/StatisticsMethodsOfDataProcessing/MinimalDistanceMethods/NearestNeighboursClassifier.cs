@@ -1,12 +1,10 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
-using StatisticsMethodsOfDataProcessing.Interfaces;
-using System;
+using StatisticsMethodsOfDataProcessing.MinimalDistanceMethods.Interfaces;
+using StatisticsMethodsOfDataProcessing.Model;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace StatisticsMethodsOfDataProcessing
+namespace StatisticsMethodsOfDataProcessing.MinimalDistanceMethods
 {
     public class NearestNeighboursClassifier : IClassifier
     {

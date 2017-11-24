@@ -1,13 +1,10 @@
-﻿using StatisticsMethodsOfDataProcessing.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.Statistics;
+using StatisticsMethodsOfDataProcessing.Model;
+using StatisticsMethodsOfDataProcessing.MinimalDistanceMethods.Interfaces;
 
-namespace StatisticsMethodsOfDataProcessing
+namespace StatisticsMethodsOfDataProcessing.MinimalDistanceMethods
 {
     public class FisherLinearDiscriminator : ILinearDiscriminator
     { 
