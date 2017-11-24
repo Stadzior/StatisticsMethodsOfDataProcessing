@@ -6,8 +6,8 @@
     xmlns:local="clr-namespace:StatisticsMethodsOfDataProcessing"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="MainWindow"
-    Width="500"
-    Height="500"
+    Width="444.611"
+    Height="555.389"
     mc:Ignorable="d">
     <Grid x:Name="ParentGrid">
         <Grid.RowDefinitions>
@@ -97,6 +97,7 @@
                         Grid.Row="0"
                         Grid.Column="1"
                         Margin="0,0,15,15"
+                        Click="ClassifiersExecuteButton_Click"
                         Content="Execute" />
                     <Label
                         x:Name="ClassifiersClassifiersLabel"

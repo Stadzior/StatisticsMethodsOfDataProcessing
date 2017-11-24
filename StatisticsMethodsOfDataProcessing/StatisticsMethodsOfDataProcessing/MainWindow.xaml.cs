@@ -180,5 +180,10 @@ namespace StatisticsMethodsOfDataProcessing
             else if (FeaturesSelectionSFSRadioButton.IsChecked ?? false)
                 SelectedAlgorithm = FeatureSelectionAlgorithm.SFS;              
         }
+
+        private void ClassifiersExecuteButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
