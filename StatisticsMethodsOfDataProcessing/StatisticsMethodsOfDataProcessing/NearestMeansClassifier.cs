@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace StatisticsMethodsOfDataProcessing
 {
-    public class KNearestMeansClassifier : IClassifier
+    public class NearestMeansClassifier : IClassifier
     {
-        public IEnumerable<FeatureClass> Classify(FeatureClass sourceClass)
+        public string Classify(Vector<double> sample, IEnumerable<FeatureClass> featureClasses, int k = 1)
         {
             return null;
         }

@@ -9,11 +9,19 @@ namespace StatisticsMethodsOfDataProcessing
 {
     public static class Extensions
     {
-        public static IList<Vector<T>> AsVectors<T>(this Matrix<T> matrix) where T : struct, IEquatable<T>, IFormattable
+        public static IList<Vector<T>> RowsAsVectors<T>(this Matrix<T> matrix) where T : struct, IEquatable<T>, IFormattable
         {
             var result = new List<Vector<T>>();
             for (int i = 0; i < matrix.RowCount; i++)
                 result.Add(matrix.Row(i));
+            return result;
+        }
+
+        public static IList<Vector<T>> ColumnsAsVectors<T>(this Matrix<T> matrix) where T : struct, IEquatable<T>, IFormattable
+        {
+            var result = new List<Vector<T>>();
+            for (int i = 0; i < matrix.ColumnCount; i++)
+                result.Add(matrix.Column(i));
             return result;
         }
 
@@ -59,11 +67,11 @@ namespace StatisticsMethodsOfDataProcessing
         public static Matrix<double> CovarianceMatrix(this Matrix<double> source)
         {
             var meansMatrix = Matrix<double>.Build.Dense(source.RowCount, source.ColumnCount);
-            foreach (var feature in source.AsVectors())
+            foreach (var feature in source.RowsAsVectors())
             {
                 var featureMean = feature.Mean();
                 for (int i = 0; i < feature.Count; i++)
-                    meansMatrix[source.AsVectors().IndexOf(feature), i] = featureMean;
+                    meansMatrix[source.RowsAsVectors().IndexOf(feature), i] = featureMean;
             }
 
             var differenceMatrix = source - meansMatrix;
@@ -117,6 +125,25 @@ namespace StatisticsMethodsOfDataProcessing
                     subMatrix[i, j] = source[rowsIndices.ElementAt(i), columnsIndices.ElementAt(j)];
 
             return subMatrix;
+        }
+
+        public static double EuclidDistance(this Vector<double> source, Vector<double> target)
+        {
+            if (source.Count != target.Count)
+                throw new InvalidOperationException("Vectors coordinate count mismatched.");
+
+            var result = 0.0;
+            for (int i = 0; i < source.Count; i++)
+                result += Math.Pow(target[i] - source[i], 2);
+            return Math.Sqrt(result);
+        }
+
+        public static double MahalonobisDistance(this Vector<double> sourcePoint, FeatureClass targetClass)
+        {
+            if (sourcePoint.Count != targetClass.Features.Count)
+                throw new InvalidOperationException("Vector coordinate count and class feature count mismatched.");
+
+            return 0;
         }
     }
 }

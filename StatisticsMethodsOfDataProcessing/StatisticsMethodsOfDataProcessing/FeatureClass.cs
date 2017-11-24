@@ -11,7 +11,7 @@ namespace StatisticsMethodsOfDataProcessing
     {
         public string Name { get; set; }
         public Matrix<double> Matrix { get; set; }
-        public IList<Vector<double>> Features => Matrix.AsVectors();
+        public IList<Vector<double>> Features => Matrix.RowsAsVectors();
         public int SampleCount => Matrix.ColumnCount;
 
         public override string ToString()
