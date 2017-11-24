@@ -181,7 +181,7 @@ namespace StatisticsMethodsOfDataProcessing
                 SelectedAlgorithm = FeatureSelectionAlgorithm.SFS;              
         }
 
-        private void ClassifiersExecuteButton_Click(object sender, RoutedEventArgs e)
+        private void SimpleClassificationClassifyButton_Click(object sender, RoutedEventArgs e)
         {
 
         }

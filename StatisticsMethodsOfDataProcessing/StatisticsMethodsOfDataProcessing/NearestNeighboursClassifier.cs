@@ -21,10 +21,14 @@ namespace StatisticsMethodsOfDataProcessing
                 foreach (var sample in featureClass.Matrix.ColumnsAsVectors())
                     distances.Add(featureClass.Name, sample.EuclidDistance(sample));
 
-            var classesNames = distances.OrderBy(x => x.Value).Take(k).Select(x => x.Key);
+            var shortestDistances = distances.OrderBy(x => x.Value).Take(k).Select(x => x.Key);
+            var classesNames = distances
+                .Select(x => new { x.Key, Value = distances.Count(y => y.Key == x.Key) })
+                .ToDictionary(x => x.Key, x => x.Value);
 
-            return null;
-
+            return classesNames
+                .OrderByDescending(x => x.Value)
+                .First().Key;
         }
     }
 }

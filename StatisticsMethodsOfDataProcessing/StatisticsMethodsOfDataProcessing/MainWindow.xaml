@@ -73,6 +73,74 @@
                         Content="SFS" />
                 </Grid>
             </TabItem>
+            <TabItem BorderThickness="0" Header="Simple classification">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="35*" MinHeight="35" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="38*" MinHeight="35" />
+                        <RowDefinition Height="38*" MinHeight="35" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition MinWidth="100" />
+                        <ColumnDefinition MinWidth="100" />
+                        <ColumnDefinition MinWidth="100" />
+                    </Grid.ColumnDefinitions>
+                    <Button
+                        x:Name="SimpleClassificationClassifyButton"
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Margin="0,0,15,15"
+                        Click="SimpleClassificationClassifyButton_Click"
+                        Content="Classify" />
+                    <Label
+                        x:Name="SimpleClassificationSimpleClassificationLabel"
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Height="28"
+                        HorizontalAlignment="Left"
+                        Content="Classifier:" />
+                    <ComboBox
+                        x:Name="SimpleClassificationSimpleClassificationComboBox"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Width="120"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        SelectedIndex="0">
+                        <ComboBoxItem Content="KNN" />
+                        <ComboBoxItem Content="KNM" />
+                    </ComboBox>
+                    <Label
+                        x:Name="SimpleClassificationKLabel"
+                        Grid.Row="2"
+                        Grid.Column="0"
+                        Height="28"
+                        HorizontalAlignment="Left"
+                        Content="k:" />
+                    <TextBox
+                        x:Name="SimpleClassificationKTextBox"
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Width="100"
+                        Margin="0,10,0,10"
+                        HorizontalAlignment="Right" />
+                    <Label
+                        x:Name="SimpleClassificationSampleLabel"
+                        Grid.Row="3"
+                        Grid.Column="0"
+                        Height="28"
+                        HorizontalAlignment="Left"
+                        Content="Sample:" />
+                    <TextBox
+                        x:Name="SimpleClassificationSampleTextBox"
+                        Grid.Row="3"
+                        Grid.Column="1"
+                        Width="100"
+                        Margin="0,10,0,10"
+                        HorizontalAlignment="Right" />
+                </Grid>
+            </TabItem>
             <TabItem BorderThickness="0" Header="Classifiers">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -97,7 +165,6 @@
                         Grid.Row="0"
                         Grid.Column="1"
                         Margin="0,0,15,15"
-                        Click="ClassifiersExecuteButton_Click"
                         Content="Execute" />
                     <Label
                         x:Name="ClassifiersClassifiersLabel"
@@ -105,7 +172,7 @@
                         Grid.Column="0"
                         Height="28"
                         HorizontalAlignment="Left"
-                        Content="Classifiers:" />
+                        Content="Classifier:" />
                     <ComboBox
                         x:Name="ClassifiersClassifiersComboBox"
                         Grid.Row="1"
@@ -148,13 +215,13 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <Grid Grid.Row="1">
+        <Grid x:Name="FileManipulationSection" Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Button
-                x:Name="FeaturesSelectionOpenFileButton"
+                x:Name="OpenFileButton"
                 Grid.Column="0"
                 Width="100"
                 Height="25"
@@ -162,7 +229,7 @@
                 Click="OpenFileButton_Click"
                 Content="Open file" />
             <Button
-                x:Name="FeaturesSelectionSaveFileButton"
+                x:Name="SaveFileButton"
                 Grid.Column="1"
                 Width="100"
                 Height="25"
