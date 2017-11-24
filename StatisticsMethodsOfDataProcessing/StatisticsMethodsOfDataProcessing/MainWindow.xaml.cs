@@ -71,7 +71,6 @@ namespace StatisticsMethodsOfDataProcessing
             ResultsTextBox.ScrollToEnd();
         }
 
-
         private void FeaturesSelectionComputeButton_Click(object sender, RoutedEventArgs e)
         {
             var validFeatureCountInputted = int.TryParse(FeaturesSelectionFeaturesCountTextBox.Text, out int featureCount);
