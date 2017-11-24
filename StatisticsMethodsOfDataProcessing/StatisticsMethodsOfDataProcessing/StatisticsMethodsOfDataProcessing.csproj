@@ -66,19 +66,19 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Extensions.cs" />
-    <Compile Include="FeatureClass.cs" />
-    <Compile Include="FeatureSelectionAlgorithm.cs" />
-    <Compile Include="FisherLinearDiscriminator.cs" />
-    <Compile Include="Interfaces\IClassifier.cs" />
-    <Compile Include="Interfaces\ILinearDiscriminator.cs" />
-    <Compile Include="NearestMeansClassifier.cs" />
+    <Compile Include="Model\FeatureClass.cs" />
+    <Compile Include="Enums\FeatureSelectionAlgorithm.cs" />
+    <Compile Include="MinimalDistanceMethods\FisherLinearDiscriminator.cs" />
+    <Compile Include="MinimalDistanceMethods\Interfaces\IClassifier.cs" />
+    <Compile Include="MinimalDistanceMethods\Interfaces\ILinearDiscriminator.cs" />
+    <Compile Include="MinimalDistanceMethods\NearestMeansClassifier.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NearestNeighboursClassifier.cs" />
+    <Compile Include="MinimalDistanceMethods\NearestNeighboursClassifier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -106,10 +106,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Maple_Oak.txt" />
+    <Resource Include="Assets\Maple_Oak.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="TestSample.txt" />
+    <Resource Include="Assets\TestSample.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
