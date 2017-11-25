@@ -33,7 +33,12 @@ namespace StatisticsMethodsOfDataProcessing
 
         private void OpenFileButton_Click(object sender, RoutedEventArgs e)
         {
-            var openFileDialog = new OpenFileDialog();
+            var openFileDialog = new OpenFileDialog
+            {
+                Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*",
+                FilterIndex = 0
+            };
+
             if (openFileDialog.ShowDialog() == true)
             {
                 string[] fileContent = null;
@@ -46,37 +51,46 @@ namespace StatisticsMethodsOfDataProcessing
                         foreach (var featureClass in FeatureClasses)
                         {
                             if (featureClass.Features.Count < 10 && featureClass.SampleCount < 10)
-                                ResultsTextBox.AppendText($"\n{featureClass.ToString()}");
+                                ResultsTextBox.AppendText($"{Environment.NewLine}{featureClass.ToString()}");
                             else
-                                ResultsTextBox.AppendText($"\n{featureClass.Name} class loaded");
+                                ResultsTextBox.AppendText($"{Environment.NewLine}{featureClass.Name} class loaded");
                         }
                     }
                 }
                 catch (Exception)
                 {
-                    ResultsTextBox.AppendText($"\n File {openFileDialog.FileName} is broken or of not supported format.");
+                    ResultsTextBox.AppendText($"{Environment.NewLine} File {openFileDialog.FileName} is broken or of not supported format.");
                 }
             }
         }
 
         private void SaveFileButton_Click(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*",
+                FilterIndex = 0
+            };
+
             if (saveFileDialog.ShowDialog() == true)
                 File.WriteAllText(saveFileDialog.FileName, ResultsTextBox.Text);
         }
 
         private void ResultsTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            ResultsTextBox.ScrollToEnd();
-        }
+            => ResultsTextBox.ScrollToEnd();
 
         private void FeaturesSelectionComputeButton_Click(object sender, RoutedEventArgs e)
         {
+            if (FeatureClasses == null || !FeatureClasses.Any())
+            {
+                ResultsTextBox.AppendText($"{Environment.NewLine}There is no class loaded, use Open file button to load some data.");
+                return;
+            }
+
             var validFeatureCountInputted = int.TryParse(FeaturesSelectionFeaturesCountTextBox.Text, out int featureCount);
             if (validFeatureCountInputted)
             {
-                var computationResultBuilder = new StringBuilder($"\nBest {featureCount} features: ");
+                var computationResultBuilder = new StringBuilder($"{Environment.NewLine}Best {featureCount} features: ");
                 try
                 {
                     var watch = Stopwatch.StartNew();
@@ -92,24 +106,20 @@ namespace StatisticsMethodsOfDataProcessing
                             break;
                     }
                     watch.Stop();
-                    if (discriminationResults == null)
-                        ResultsTextBox.AppendText("There is no class loaded, use Open file button to load some data.");
-                    else
-                    {
-                        foreach (var featurePosition in discriminationResults)
-                            computationResultBuilder.Append($"{featurePosition}, ");
-                        computationResultBuilder.Remove(computationResultBuilder.Length - 2, 2);
-                        computationResultBuilder.AppendLine($"\t{SelectedAlgorithm.ToString()}\tElapsed time: {watch.Elapsed.Minutes} min {watch.Elapsed.Seconds} s");
-                        ResultsTextBox.AppendText(computationResultBuilder.ToString());
-                    }
+
+                    foreach (var featurePosition in discriminationResults)
+                        computationResultBuilder.Append($"{featurePosition}, ");
+                    computationResultBuilder.Remove(computationResultBuilder.Length - 2, 2);
+                    computationResultBuilder.AppendLine($"\t{SelectedAlgorithm.ToString()}\tElapsed time: {watch.Elapsed.Minutes} min {watch.Elapsed.Seconds} s");
+                    ResultsTextBox.AppendText(computationResultBuilder.ToString());
                 }
                 catch (Exception ex)
                 {
-                    ResultsTextBox.AppendText($"\nError occured while computing: {ex.Message}.");
+                    ResultsTextBox.AppendText($"{Environment.NewLine}Error occured while computing: {ex.Message}.");
                 }
             }
             else
-                ResultsTextBox.AppendText($"Invalid feature count \"{FeaturesSelectionFeaturesCountTextBox.Text}\" inputted.");
+                ResultsTextBox.AppendText($"{Environment.NewLine}Invalid feature count \"{FeaturesSelectionFeaturesCountTextBox.Text}\" inputted.");
         }
 
         private void FeaturesSelectionRadioButton_Checked(object sender, RoutedEventArgs e)
@@ -122,6 +132,12 @@ namespace StatisticsMethodsOfDataProcessing
 
         private void SimpleClassificationClassifyButton_Click(object sender, RoutedEventArgs e)
         {
+            if (FeatureClasses == null || !FeatureClasses.Any())
+            {
+                ResultsTextBox.AppendText($"{Environment.NewLine}There is no class loaded, use Open file button to load some data.");
+                return;
+            }
+
             Vector<double> sample = null;
             int k = 1;
             try
@@ -131,7 +147,8 @@ namespace StatisticsMethodsOfDataProcessing
             }
             catch (Exception)
             {
-                ResultsTextBox.AppendText("Incorrect format of sample or k use:\n double,double,double... e.g. 1.023,34.232,43.123 for sample\ninteger for k");
+                ResultsTextBox.AppendText($"{Environment.NewLine}Incorrect format of sample or k use:{Environment.NewLine}- \"double,double,double...\" e.g. \"1.023,34.232,43.123\" for sample{Environment.NewLine}- integer for k");
+                return;
             }
 
             IClassifier classifier = null;
@@ -147,8 +164,18 @@ namespace StatisticsMethodsOfDataProcessing
                     classifier = new NearestMeansWithDispertionClassifier();
                     break;
             }
-            var classificationResultClassName = classifier.Classify(sample, FeatureClasses, k);
-            ResultsTextBox.AppendText($"\nSample has been classified to class: {classificationResultClassName}");
+            string classificationResultClassName = string.Empty;
+            try
+            {
+                classificationResultClassName = classifier.Classify(sample, FeatureClasses, k);
+            }
+            catch (Exception ex)
+            {
+                ResultsTextBox.AppendText($"{Environment.NewLine}Error occured while classifying: {ex.Message}");
+                return;
+            }
+
+            ResultsTextBox.AppendText($"{Environment.NewLine}Sample has been classified to class: {classificationResultClassName}");
         }
 
         #endregion

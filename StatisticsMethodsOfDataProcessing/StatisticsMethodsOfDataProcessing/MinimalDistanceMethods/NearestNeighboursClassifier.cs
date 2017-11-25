@@ -1,6 +1,7 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
 using StatisticsMethodsOfDataProcessing.MinimalDistanceMethods.Interfaces;
 using StatisticsMethodsOfDataProcessing.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -13,11 +14,14 @@ namespace StatisticsMethodsOfDataProcessing.MinimalDistanceMethods
             if (featureClasses == null || !featureClasses.Any())
                 return null;
 
+            if (featureClasses.First().Features.Count != sourceSample.Count)
+                throw new InvalidOperationException("Sample factors count and class features count mismatched.");
+
             var distances = new List<KeyValuePair<string, double>>();
 
             foreach (var featureClass in featureClasses)
                 foreach (var sample in featureClass.Matrix.ColumnsAsVectors())
-                    distances.Add(new KeyValuePair<string, double>(featureClass.Name, sample.EuclidDistance(sample)));
+                    distances.Add(new KeyValuePair<string, double>(featureClass.Name, sample.EuclidDistance(sourceSample)));
 
             var shortestDistances = distances
                 .OrderBy(x => x.Value)
