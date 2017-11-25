@@ -18,6 +18,7 @@
         </Grid.RowDefinitions>
         <TabControl
             Grid.Row="0"
+            Width="437"
             Margin="0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
@@ -55,7 +56,7 @@
                         Grid.Column="1"
                         Width="100"
                         Margin="0,10,0,10"
-                        HorizontalAlignment="Right"
+                        HorizontalAlignment="Left"
                         Text="1" />
                     <RadioButton
                         x:Name="FeaturesSelectionFisherRadioButton"
@@ -73,7 +74,7 @@
                         Content="SFS" />
                 </Grid>
             </TabItem>
-            <TabItem BorderThickness="0" Header="Simple classification">
+            <TabItem BorderThickness="0" Header="Classification">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="35*" MinHeight="35" />
@@ -82,131 +83,75 @@
                         <RowDefinition Height="38*" MinHeight="35" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition MinWidth="100" />
-                        <ColumnDefinition MinWidth="100" />
-                        <ColumnDefinition MinWidth="100" />
+                        <ColumnDefinition Width="144*" MinWidth="100" />
+                        <ColumnDefinition Width="166*" MinWidth="100" />
+                        <ColumnDefinition Width="123*" MinWidth="100" />
                     </Grid.ColumnDefinitions>
-                    <Button
-                        x:Name="SimpleClassificationClassifyButton"
-                        Grid.Row="0"
-                        Grid.Column="0"
-                        Margin="0,0,15,15"
-                        Click="SimpleClassificationClassifyButton_Click"
-                        Content="Classify" />
                     <Label
                         x:Name="SimpleClassificationSimpleClassificationLabel"
-                        Grid.Row="1"
+                        Grid.Row="0"
                         Grid.Column="0"
-                        Height="28"
+                        Width="59"
                         HorizontalAlignment="Left"
                         Content="Classifier:" />
                     <ComboBox
                         x:Name="SimpleClassificationClassifierComboBox"
-                        Grid.Row="1"
+                        Grid.Row="0"
                         Grid.Column="1"
-                        Width="120"
+                        Width="134"
+                        Height="22"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
-                        SelectedIndex="0">
+                        SelectedIndex="0"
+                        SelectionChanged="SimpleClassificationClassifierComboBox_SelectionChanged">
                         <ComboBoxItem Content="Nearest neighbours" />
                         <ComboBoxItem Content="Nearest means" />
                         <ComboBoxItem Content="Nearest means with dispertion (Mahalonobis)" />
                     </ComboBox>
+                    <Button
+                        x:Name="SimpleClassificationClassifyButton"
+                        Grid.Row="0"
+                        Grid.Column="2"
+                        Margin="15,0,15,15"
+                        Click="SimpleClassificationClassifyButton_Click"
+                        Content="Classify" />
                     <Label
                         x:Name="SimpleClassificationKLabel"
-                        Grid.Row="2"
+                        Grid.Row="1"
                         Grid.Column="0"
-                        Height="28"
+                        Width="19"
+                        Margin="0,5"
                         HorizontalAlignment="Left"
                         Content="k:" />
                     <TextBox
                         x:Name="SimpleClassificationKTextBox"
-                        Grid.Row="2"
+                        Grid.Row="1"
                         Grid.Column="1"
                         Width="100"
                         Margin="0,10,0,10"
-                        HorizontalAlignment="Right"
+                        HorizontalAlignment="Left"
                         Text="1" />
                     <Label
                         x:Name="SimpleClassificationSampleLabel"
-                        Grid.Row="3"
+                        Grid.Row="2"
                         Grid.Column="0"
-                        Height="28"
+                        Width="52"
+                        Margin="0,3,0,4"
                         HorizontalAlignment="Left"
                         Content="Sample:" />
                     <TextBox
                         x:Name="SimpleClassificationSampleTextBox"
-                        Grid.Row="3"
-                        Grid.Column="1"
-                        Width="100"
-                        Margin="0,10,0,10"
-                        HorizontalAlignment="Right" />
-                </Grid>
-            </TabItem>
-            <TabItem BorderThickness="0" Header="Classifiers">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="35*" MinHeight="35" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="38*" MinHeight="35" />
-                        <RowDefinition Height="38*" MinHeight="35" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition MinWidth="100" />
-                        <ColumnDefinition MinWidth="100" />
-                        <ColumnDefinition MinWidth="100" />
-                    </Grid.ColumnDefinitions>
-                    <Button
-                        x:Name="ClassifiersTrainButton"
-                        Grid.Row="0"
-                        Grid.Column="0"
-                        Margin="0,0,15,15"
-                        Content="Train" />
-                    <Button
-                        x:Name="ClassifiersExecuteButton"
-                        Grid.Row="0"
-                        Grid.Column="1"
-                        Margin="0,0,15,15"
-                        Content="Execute" />
-                    <Label
-                        x:Name="ClassifiersClassifiersLabel"
-                        Grid.Row="1"
-                        Grid.Column="0"
-                        Height="28"
-                        HorizontalAlignment="Left"
-                        Content="Classifier:" />
-                    <ComboBox
-                        x:Name="ClassifiersClassifierComboBox"
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        Width="120"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        SelectedIndex="0">
-                        <ComboBoxItem Content="Nearest neighbours" />
-                        <ComboBoxItem Content="Nearest means" />
-                        <ComboBoxItem Content="Nearest means with dispertion (Mahalonobis)" />
-                    </ComboBox>
-                    <Label
-                        x:Name="ClassifiersKLabel"
-                        Grid.Row="2"
-                        Grid.Column="0"
-                        Height="28"
-                        HorizontalAlignment="Left"
-                        Content="k:" />
-                    <TextBox
-                        x:Name="ClassifiersKTextBox"
                         Grid.Row="2"
                         Grid.Column="1"
                         Width="100"
                         Margin="0,10,0,10"
-                        HorizontalAlignment="Right"
-                        Text="1" />
+                        HorizontalAlignment="Left" />
                     <Label
                         x:Name="ClassifiersTrainingPartLabel"
                         Grid.Row="3"
                         Grid.Column="0"
-                        Height="28"
+                        Width="100"
+                        Margin="0,4,0,3"
                         HorizontalAlignment="Left"
                         Content="Training part (%):" />
                     <TextBox
@@ -215,7 +160,8 @@
                         Grid.Column="1"
                         Width="100"
                         Margin="0,10,0,10"
-                        HorizontalAlignment="Right"
+                        HorizontalAlignment="Left"
+                        IsEnabled="False"
                         Text="50" />
                 </Grid>
             </TabItem>

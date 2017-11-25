@@ -152,15 +152,15 @@ namespace StatisticsMethodsOfDataProcessing
             }
 
             IClassifier classifier = null;
-            switch ((ClassifyingMethod)SimpleClassificationClassifierComboBox.SelectedIndex)
+            switch ((ClassificationAlgorithm)SimpleClassificationClassifierComboBox.SelectedIndex)
             {
-                case ClassifyingMethod.NearestNeighbours:
+                case ClassificationAlgorithm.NearestNeighbours:
                     classifier = new NearestNeighboursClassifier();
                     break;
-                case ClassifyingMethod.NearestMeans:
+                case ClassificationAlgorithm.NearestMeans:
                     classifier = new NearestMeansClassifier();
                     break;
-                case ClassifyingMethod.NearestMeansWithDispertion:
+                case ClassificationAlgorithm.NearestMeansWithDispertion:
                     classifier = new NearestMeansWithDispertionClassifier();
                     break;
             }
@@ -210,6 +210,12 @@ namespace StatisticsMethodsOfDataProcessing
                 featureClasses.Add(featureClass);
             }
             return featureClasses;
+        }
+
+        private void SimpleClassificationClassifierComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ClassifiersTrainingPartTextBox != null)
+                ClassifiersTrainingPartTextBox.IsEnabled = (sender as ComboBox)?.SelectedIndex != (int)ClassificationAlgorithm.NearestNeighbours;
         }
     }
 }

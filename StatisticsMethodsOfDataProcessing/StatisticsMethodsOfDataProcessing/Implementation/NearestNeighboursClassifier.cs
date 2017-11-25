@@ -26,6 +26,7 @@ namespace StatisticsMethodsOfDataProcessing.MinimalDistanceMethods
             var shortestDistances = distances
                 .OrderBy(x => x.Value)
                 .Take(k);
+
             var classesNames = shortestDistances
                 .Select(x => x.Key)
                 .Distinct()

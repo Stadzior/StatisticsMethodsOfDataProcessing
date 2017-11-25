@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace StatisticsMethodsOfDataProcessing.Enums
 {
-    public enum ClassifyingMethod
+    public enum ClassificationAlgorithm
     {
         NearestNeighbours = 0,
         NearestMeans = 1,

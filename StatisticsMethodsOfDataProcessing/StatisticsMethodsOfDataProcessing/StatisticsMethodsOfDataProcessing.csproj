@@ -65,22 +65,22 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Enums\ClassifyingMethod.cs" />
+    <Compile Include="Enums\ClassificationAlgorithm.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="MinimalDistanceMethods\NearestMeansWithDispertionClassifier.cs" />
+    <Compile Include="Implementation\NearestMeansWithDispertionClassifier.cs" />
     <Compile Include="Model\FeatureClass.cs" />
     <Compile Include="Enums\FeatureSelectionAlgorithm.cs" />
-    <Compile Include="MinimalDistanceMethods\FisherLinearDiscriminator.cs" />
-    <Compile Include="MinimalDistanceMethods\Interfaces\IClassifier.cs" />
-    <Compile Include="MinimalDistanceMethods\Interfaces\ILinearDiscriminator.cs" />
-    <Compile Include="MinimalDistanceMethods\NearestMeansClassifier.cs" />
+    <Compile Include="Implementation\FisherLinearDiscriminator.cs" />
+    <Compile Include="Implementation\Interfaces\IClassifier.cs" />
+    <Compile Include="Implementation\Interfaces\ILinearDiscriminator.cs" />
+    <Compile Include="Implementation\NearestMeansClassifier.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MinimalDistanceMethods\NearestNeighboursClassifier.cs" />
+    <Compile Include="Implementation\NearestNeighboursClassifier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
