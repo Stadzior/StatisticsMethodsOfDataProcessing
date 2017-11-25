@@ -11,13 +11,19 @@
     mc:Ignorable="d">
     <Grid x:Name="ParentGrid">
         <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="12*" />
+            <RowDefinition Height="18*" />
             <RowDefinition Height="3*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="5*" />
-            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
+        <Menu Grid.Row="0" DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Click="OpenFileButton_Click" Header="Open" />
+                <MenuItem Click="SaveFileButton_Click" Header="Save" />
+            </MenuItem>
+        </Menu>
         <TabControl
-            Grid.Row="0"
+            Grid.Row="1"
             Width="437"
             Margin="0"
             HorizontalAlignment="Left"
@@ -26,50 +32,49 @@
             <TabItem Header="Feature selection">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition MinHeight="40" />
-                        <RowDefinition MinHeight="40" />
-                        <RowDefinition MinHeight="40" />
+                        <RowDefinition MinHeight="35" />
+                        <RowDefinition MinHeight="35" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition MinWidth="100" />
                         <ColumnDefinition MinWidth="100" />
                         <ColumnDefinition MinWidth="100" />
                     </Grid.ColumnDefinitions>
-                    <Button
-                        x:Name="FeaturesSelectionComputeButton"
-                        Grid.Row="0"
-                        Grid.Column="0"
-                        Margin="5"
-                        Click="FeaturesSelectionComputeButton_Click"
-                        Content="Compute" />
                     <Label
                         x:Name="FeaturesSelectionFeaturesCountLabel"
-                        Grid.Row="1"
+                        Grid.Row="0"
                         Grid.Column="0"
                         Height="28"
-                        Margin="0,5"
                         HorizontalAlignment="Left"
                         Content="Features count:" />
                     <TextBox
                         x:Name="FeaturesSelectionFeaturesCountTextBox"
-                        Grid.Row="1"
+                        Grid.Row="0"
                         Grid.Column="1"
                         Width="100"
                         Margin="0,10,0,10"
                         HorizontalAlignment="Left"
                         Text="1" />
+                    <Button
+                        x:Name="FeaturesSelectionComputeButton"
+                        Grid.Row="0"
+                        Grid.Column="3"
+                        Margin="20,10,20,10"
+                        Click="FeaturesSelectionComputeButton_Click"
+                        Content="Compute" />
                     <RadioButton
                         x:Name="FeaturesSelectionFisherRadioButton"
-                        Grid.Row="2"
+                        Grid.Row="1"
                         Grid.Column="0"
+                        Margin="0,10,0,10"
                         Checked="FeaturesSelectionRadioButton_Checked"
                         Content="Fisher"
                         IsChecked="True" />
                     <RadioButton
                         x:Name="FeaturesSelectionSFSRadioButton"
-                        Grid.Row="2"
+                        Grid.Row="1"
                         Grid.Column="1"
-                        Margin="0,0,0,10"
+                        Margin="0,10,0,10"
                         Checked="FeaturesSelectionRadioButton_Checked"
                         Content="SFS" />
                 </Grid>
@@ -77,70 +82,68 @@
             <TabItem BorderThickness="0" Header="Classification">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="35*" MinHeight="35" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="38*" MinHeight="35" />
-                        <RowDefinition Height="38*" MinHeight="35" />
+                        <RowDefinition MinHeight="50" />
+                        <RowDefinition MinHeight="35" />
+                        <RowDefinition MinHeight="35" />
+                        <RowDefinition MinHeight="35" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="144*" MinWidth="100" />
-                        <ColumnDefinition Width="166*" MinWidth="100" />
-                        <ColumnDefinition Width="123*" MinWidth="100" />
+                        <ColumnDefinition MinWidth="100" />
+                        <ColumnDefinition MinWidth="135" />
+                        <ColumnDefinition MinWidth="100" />
+                        <ColumnDefinition MinWidth="100" />
                     </Grid.ColumnDefinitions>
                     <Label
-                        x:Name="SimpleClassificationSimpleClassificationLabel"
+                        x:Name="ClassificationClassificationLabel"
                         Grid.Row="0"
                         Grid.Column="0"
-                        Width="59"
+                        Margin="0,10,0,10"
                         HorizontalAlignment="Left"
                         Content="Classifier:" />
                     <ComboBox
-                        x:Name="SimpleClassificationClassifierComboBox"
+                        x:Name="ClassificationClassifierComboBox"
                         Grid.Row="0"
                         Grid.Column="1"
-                        Width="134"
-                        Height="22"
+                        Margin="0,10,0,10"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         SelectedIndex="0"
-                        SelectionChanged="SimpleClassificationClassifierComboBox_SelectionChanged">
+                        SelectionChanged="ClassificationClassifierComboBox_SelectionChanged">
                         <ComboBoxItem Content="Nearest neighbours" />
                         <ComboBoxItem Content="Nearest means" />
                         <ComboBoxItem Content="Nearest means with dispertion (Mahalonobis)" />
                     </ComboBox>
                     <Button
-                        x:Name="SimpleClassificationClassifyButton"
+                        x:Name="ClassificationClassifyButton"
                         Grid.Row="0"
                         Grid.Column="2"
-                        Margin="15,0,15,15"
-                        Click="SimpleClassificationClassifyButton_Click"
+                        Margin="10"
+                        Click="ClassificationClassifyButton_Click"
                         Content="Classify" />
                     <Label
-                        x:Name="SimpleClassificationKLabel"
+                        x:Name="ClassificationKLabel"
                         Grid.Row="1"
                         Grid.Column="0"
-                        Width="19"
-                        Margin="0,5"
+                        Margin="0,6,0,6"
                         HorizontalAlignment="Left"
                         Content="k:" />
                     <TextBox
-                        x:Name="SimpleClassificationKTextBox"
+                        x:Name="ClassificationKTextBox"
                         Grid.Row="1"
                         Grid.Column="1"
                         Width="100"
-                        Margin="0,10,0,10"
+                        Margin="0,8,0,8"
                         HorizontalAlignment="Left"
                         Text="1" />
                     <Label
-                        x:Name="SimpleClassificationSampleLabel"
+                        x:Name="ClassificationSampleLabel"
                         Grid.Row="2"
                         Grid.Column="0"
                         Width="52"
-                        Margin="0,3,0,4"
                         HorizontalAlignment="Left"
                         Content="Sample:" />
                     <TextBox
-                        x:Name="SimpleClassificationSampleTextBox"
+                        x:Name="ClassificationSampleTextBox"
                         Grid.Row="2"
                         Grid.Column="1"
                         Width="100"
@@ -166,28 +169,6 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <Grid x:Name="FileManipulationSection" Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Button
-                x:Name="OpenFileButton"
-                Grid.Column="0"
-                Width="100"
-                Height="25"
-                Margin="5"
-                Click="OpenFileButton_Click"
-                Content="Open file" />
-            <Button
-                x:Name="SaveFileButton"
-                Grid.Column="1"
-                Width="100"
-                Height="25"
-                Margin="5"
-                Click="SaveFileButton_Click"
-                Content="Save file" />
-        </Grid>
         <Border
             Grid.Row="2"
             BorderBrush="DarkGray"
