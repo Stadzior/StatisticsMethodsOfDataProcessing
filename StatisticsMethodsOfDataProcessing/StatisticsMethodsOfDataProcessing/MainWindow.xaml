@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="MainWindow"
     Width="444.611"
-    Height="555.389"
+    Height="580.389"
     mc:Ignorable="d">
     <Grid x:Name="ParentGrid">
         <Grid.RowDefinitions>
@@ -125,7 +125,8 @@
                         Grid.Column="1"
                         Width="100"
                         Margin="0,10,0,10"
-                        HorizontalAlignment="Right" />
+                        HorizontalAlignment="Right"
+                        Text="1" />
                     <Label
                         x:Name="SimpleClassificationSampleLabel"
                         Grid.Row="3"
@@ -199,7 +200,8 @@
                         Grid.Column="1"
                         Width="100"
                         Margin="0,10,0,10"
-                        HorizontalAlignment="Right" />
+                        HorizontalAlignment="Right"
+                        Text="1" />
                     <Label
                         x:Name="ClassifiersTrainingPartLabel"
                         Grid.Row="3"
@@ -213,7 +215,8 @@
                         Grid.Column="1"
                         Width="100"
                         Margin="0,10,0,10"
-                        HorizontalAlignment="Right" />
+                        HorizontalAlignment="Right"
+                        Text="50" />
                 </Grid>
             </TabItem>
         </TabControl>

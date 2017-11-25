@@ -146,5 +146,9 @@ namespace StatisticsMethodsOfDataProcessing
 
             return 0;
         }
+
+        public static IEnumerable<T> ExceptWithDuplicates<T>(this IEnumerable<T> source, IEnumerable<T> exceptionalCollection)
+            => source.Where(x => !exceptionalCollection.Any(y => y.Equals(x)));
+
     }
 }

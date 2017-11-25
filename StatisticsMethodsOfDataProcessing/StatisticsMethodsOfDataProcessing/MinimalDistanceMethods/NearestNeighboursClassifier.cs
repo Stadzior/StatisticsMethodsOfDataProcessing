@@ -13,15 +13,19 @@ namespace StatisticsMethodsOfDataProcessing.MinimalDistanceMethods
             if (featureClasses == null || !featureClasses.Any())
                 return null;
 
-            var distances = new Dictionary<string, double>();
+            var distances = new List<KeyValuePair<string, double>>();
 
             foreach (var featureClass in featureClasses)
                 foreach (var sample in featureClass.Matrix.ColumnsAsVectors())
-                    distances.Add(featureClass.Name, sample.EuclidDistance(sample));
+                    distances.Add(new KeyValuePair<string, double>(featureClass.Name, sample.EuclidDistance(sample)));
 
-            var shortestDistances = distances.OrderBy(x => x.Value).Take(k).Select(x => x.Key);
-            var classesNames = distances
-                .Select(x => new { x.Key, Value = distances.Count(y => y.Key == x.Key) })
+            var shortestDistances = distances
+                .OrderBy(x => x.Value)
+                .Take(k);
+            var classesNames = shortestDistances
+                .Select(x => x.Key)
+                .Distinct()
+                .Select(x => new { Key = x, Value = shortestDistances.Count(y => y.Key == x) })
                 .ToDictionary(x => x.Key, x => x.Value);
 
             return classesNames

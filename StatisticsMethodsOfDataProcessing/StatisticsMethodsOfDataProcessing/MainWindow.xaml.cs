@@ -148,7 +148,7 @@ namespace StatisticsMethodsOfDataProcessing
                     break;
             }
             var classificationResultClassName = classifier.Classify(sample, FeatureClasses, k);
-            ResultsTextBox.AppendText($"Sample has been classified to class: {classificationResultClassName}");
+            ResultsTextBox.AppendText($"\nSample has been classified to class: {classificationResultClassName}");
         }
 
         #endregion
@@ -159,7 +159,7 @@ namespace StatisticsMethodsOfDataProcessing
             var splittedRows = fileContent.Select(x => x.Split(','));
             var classNames = splittedRows.Select(x => x[0]).Distinct();
             var sampleCount = splittedRows
-                .Select(x => x.Except(new string[] { x[0] }).Count())
+                .Select(x => x.ExceptWithDuplicates(new string[] { x[0] }).Count())
                 .Min();
 
             foreach (var className in classNames)
@@ -173,7 +173,7 @@ namespace StatisticsMethodsOfDataProcessing
 
                 for (int i = 0; i < features.Count(); i++)
                 {
-                    var featureData = features[i].Except(new string[] { className }).ToList();
+                    var featureData = features[i].ExceptWithDuplicates(new string[] { className }).ToList();
                     for (int j = 0; j < sampleCount; j++)
                     {
                         var sample = featureData[j];
@@ -183,28 +183,6 @@ namespace StatisticsMethodsOfDataProcessing
                 featureClasses.Add(featureClass);
             }
             return featureClasses;
-        }
-
-        private static Matrix<double> GetMatrix(string[] fileContent)
-        {
-            var matrixHeight = fileContent.Length;
-            var matrixWidth = fileContent
-                .First()
-                .Trim()
-                .Count(x => string.IsNullOrWhiteSpace(x.ToString())) + 1;
-
-            var matrix = Matrix<double>.Build.Dense(matrixHeight, matrixWidth);
-            foreach (var row in fileContent)
-            {
-                var splittedRow = row.Split(',');
-                for (int i = 0; i < splittedRow.Length; i++)
-                {
-                    var item = splittedRow[i];
-                    matrix[Array.IndexOf(fileContent, row), i] = double.Parse(item);
-                }
-            }
-
-            return matrix;
         }
     }
 }
