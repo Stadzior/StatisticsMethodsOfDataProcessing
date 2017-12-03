@@ -130,7 +130,7 @@ namespace StatisticsMethodsOfDataProcessing
                 SelectedAlgorithm = FeatureSelectionAlgorithm.SFS;
         }
 
-        private void SimpleClassificationClassifyButton_Click(object sender, RoutedEventArgs e)
+        private void ClassificationClassifyButton_Click(object sender, RoutedEventArgs e)
         {
             if (FeatureClasses == null || !FeatureClasses.Any())
             {
@@ -142,8 +142,8 @@ namespace StatisticsMethodsOfDataProcessing
             int k = 1;
             try
             {
-                sample = Vector<double>.Build.DenseOfEnumerable(SimpleClassificationSampleTextBox.Text.Split(',').Select(x => double.Parse(x)));
-                k = int.Parse(SimpleClassificationKTextBox.Text);
+                sample = Vector<double>.Build.DenseOfEnumerable(ClassificationSampleTextBox.Text.Split(',').Select(x => double.Parse(x)));
+                k = int.Parse(ClassificationKTextBox.Text);
             }
             catch (Exception)
             {
@@ -152,7 +152,7 @@ namespace StatisticsMethodsOfDataProcessing
             }
 
             IClassifier classifier = null;
-            switch ((ClassificationAlgorithm)SimpleClassificationClassifierComboBox.SelectedIndex)
+            switch ((ClassificationAlgorithm)ClassificationClassifierComboBox.SelectedIndex)
             {
                 case ClassificationAlgorithm.NearestNeighbours:
                     classifier = new NearestNeighboursClassifier();
@@ -212,7 +212,7 @@ namespace StatisticsMethodsOfDataProcessing
             return featureClasses;
         }
 
-        private void SimpleClassificationClassifierComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ClassificationClassifierComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (ClassifiersTrainingPartTextBox != null)
                 ClassifiersTrainingPartTextBox.IsEnabled = (sender as ComboBox)?.SelectedIndex != (int)ClassificationAlgorithm.NearestNeighbours;
