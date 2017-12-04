@@ -10,6 +10,6 @@ namespace StatisticsMethodsOfDataProcessing.MinimalDistanceMethods.Interfaces
 {
     public interface IClassifier
     {
-        string Classify(Vector<double> sample, IEnumerable<FeatureClass> featureClasses, int k = 1);
+        string Classify(Vector<double> sourceSample, IEnumerable<FeatureClass> featureClasses, int k = 1);
     }
 }

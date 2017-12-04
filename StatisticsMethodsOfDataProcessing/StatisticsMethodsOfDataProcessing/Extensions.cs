@@ -86,8 +86,8 @@ namespace StatisticsMethodsOfDataProcessing
         {
             if (source != null && source.Any())
             {
-                var matrixExpectedDimensions = new Tuple<int, int>(source.First().Features.Count, source.First().SampleCount);
-                if (source.Any(x => x.Features.Count != matrixExpectedDimensions.Item1 || x.SampleCount != matrixExpectedDimensions.Item2))
+                var matrixExpectedDimensions = new Tuple<int, int>(source.First().Features.Count, source.First().Samples.Count);
+                if (source.Any(x => x.Features.Count != matrixExpectedDimensions.Item1 || x.Samples.Count != matrixExpectedDimensions.Item2))
                     throw new InvalidOperationException("Matrices dimensions mismatched.");
 
                 var meansMatrix = Matrix<double>.Build.Dense(source.First().Features.Count, source.Count());
@@ -149,6 +149,20 @@ namespace StatisticsMethodsOfDataProcessing
 
         public static IEnumerable<T> ExceptWithDuplicates<T>(this IEnumerable<T> source, IEnumerable<T> exceptionalCollection)
             => source.Where(x => !exceptionalCollection.Any(y => y.Equals(x)));
+
+        public static IEnumerable<T> TakeRandom<T>(this IEnumerable<T> source, int count)
+        {
+            var randoms = new List<T>(count);
+            var randomsIndices = new List<int>(count);
+            for (int i = 0; i < count; i++)
+            {
+                var range = Enumerable.Range(0, source.Count() - 1).Where(x => !randomsIndices.Contains(x));
+                var randomIndex = new Random().Next(0, source.Count() - 1 - randomsIndices.Count());
+                randomsIndices.Add(randomIndex);
+                randoms.Add(source.ElementAt(randomIndex));
+            }
+            return randoms;
+        }
 
     }
 }

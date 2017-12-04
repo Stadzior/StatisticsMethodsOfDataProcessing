@@ -67,7 +67,9 @@
     </Compile>
     <Compile Include="Enums\ClassificationAlgorithm.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Implementation\Interfaces\IClusterer.cs" />
     <Compile Include="Implementation\NearestMeansWithDispertionClassifier.cs" />
+    <Compile Include="Model\Cluster.cs" />
     <Compile Include="Model\FeatureClass.cs" />
     <Compile Include="Enums\FeatureSelectionAlgorithm.cs" />
     <Compile Include="Implementation\FisherLinearDiscriminator.cs" />

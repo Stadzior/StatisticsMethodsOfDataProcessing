@@ -20,7 +20,7 @@ namespace StatisticsMethodsOfDataProcessing.MinimalDistanceMethods
             var distances = new List<KeyValuePair<string, double>>();
 
             foreach (var featureClass in featureClasses)
-                foreach (var sample in featureClass.Matrix.ColumnsAsVectors())
+                foreach (var sample in featureClass.Samples)
                     distances.Add(new KeyValuePair<string, double>(featureClass.Name, sample.EuclidDistance(sourceSample)));
 
             var shortestDistances = distances

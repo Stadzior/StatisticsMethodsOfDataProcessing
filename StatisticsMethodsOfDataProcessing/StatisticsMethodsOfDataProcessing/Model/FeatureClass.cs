@@ -12,7 +12,7 @@ namespace StatisticsMethodsOfDataProcessing.Model
         public string Name { get; set; }
         public Matrix<double> Matrix { get; set; }
         public IList<Vector<double>> Features => Matrix.RowsAsVectors();
-        public int SampleCount => Matrix.ColumnCount;
+        public IList<Vector<double>> Samples => Matrix.ColumnsAsVectors();
 
         public override string ToString()
             => new StringBuilder(Name)
