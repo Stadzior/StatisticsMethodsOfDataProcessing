@@ -24,7 +24,7 @@ namespace StatisticsMethodsOfDataProcessing.MinimalDistanceMethods
                 .SelectMany(x => Cluster(x, k));
 
             return clusters
-                .OrderByDescending(x => x.Centroid.EuclidDistance(sourceSample))
+                .OrderBy(x => x.Centroid.EuclidDistance(sourceSample))
                 .First()
                 .FeatureClassName;
         }
