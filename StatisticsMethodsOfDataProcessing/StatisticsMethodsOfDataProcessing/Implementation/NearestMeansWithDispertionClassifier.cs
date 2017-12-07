@@ -2,14 +2,42 @@
 using MathNet.Numerics.LinearAlgebra;
 using StatisticsMethodsOfDataProcessing.Model;
 using StatisticsMethodsOfDataProcessing.MinimalDistanceMethods.Interfaces;
+using System.Linq;
+using System;
 
 namespace StatisticsMethodsOfDataProcessing.MinimalDistanceMethods
 {
-    public class NearestMeansWithDispertionClassifier : IClassifier
+    public class NearestMeansWithDispertionClassifier : NearestMeansClassifier, IClassifier
     {
-        public string Classify(Vector<double> sample, IEnumerable<FeatureClass> featureClasses, int k = 1)
+        public override IEnumerable<Cluster> Cluster(FeatureClass featureClass, int k = 1)
         {
-            return null;
+            var samples = featureClass.Samples;
+
+            var randomIndices = Enumerable.Range(0, samples.Count - 1)
+                .TakeRandom(k)
+                .ToList();
+
+            var clusters = new List<Cluster>();
+
+            for (int i = 0; i < k; i++)
+            {
+                var cluster = new Cluster(randomIndices[i], featureClass.Samples[randomIndices[i]])
+                {
+                    FeatureClassName = featureClass.Name,
+                    Centroid = featureClass.Samples[randomIndices[i]]
+                };
+                clusters.Add(cluster);
+                samples.RemoveAt(randomIndices[i]);
+            }
+
+            foreach (var sample in samples)
+            {
+                var chosenCluster = clusters
+                    .First(x => x.Centroid.EuclidDistance(sample) == clusters.Min(y => y.Centroid.MahalonobisDistance()));
+                chosenCluster.Add(featureClass.Samples.IndexOf(sample), sample);
+            }
+
+            return clusters;
         }
     }
 }

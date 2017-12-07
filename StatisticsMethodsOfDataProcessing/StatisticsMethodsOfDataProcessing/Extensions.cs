@@ -1,4 +1,5 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.Statistics;
 using StatisticsMethodsOfDataProcessing.Model;
 using System;
 using System.Collections.Generic;
@@ -79,9 +80,6 @@ namespace StatisticsMethodsOfDataProcessing
             return differenceMatrix * differenceMatrix.Transpose() / source.ColumnCount;
         }
 
-        public static double Mean(this Vector<double> source)
-            => source.Sum() / source.Count;
-
         public static Matrix<double> MeansMatrix(this IList<FeatureClass> source)
         {
             if (source != null && source.Any())
@@ -139,11 +137,14 @@ namespace StatisticsMethodsOfDataProcessing
             return Math.Sqrt(result);
         }
 
-        public static double MahalonobisDistance(this Vector<double> sourcePoint, FeatureClass targetClass)
+        public static double MahalanobisDistance(this Vector<double> source, FeatureClass target)
         {
-            if (sourcePoint.Count != targetClass.Features.Count)
+            if (source.Count() != target.Features.Count)
                 throw new InvalidOperationException("Vector coordinate count and class feature count mismatched.");
-            return 0;
+
+            var sourceMatrix = Matrix<double>.Build.Dense(target.Samples.Count, target.Features.Count, (x,y) => source[x]);
+            var meansOfEuclidDistances = Matrix<double>.Build.Dense(target.Samples.Count, target.Features.Count, (x, y) => sourceMatrix.Row(x).Mean());
+            return (sourceMatrix - meansOfEuclidDistances).Transpose() * target.Matrix.CovarianceMatrix().Inverse() * (sourceMatrix - meansOfEuclidDistances);
         }
 
         public static IEnumerable<T> ExceptWithDuplicates<T>(this IEnumerable<T> source, IEnumerable<T> exceptionalCollection)
