@@ -19,29 +19,39 @@ namespace StatisticsMethodsOfDataProcessing.MinimalDistanceMethods
                 throw new InvalidOperationException("Sample factors count and class features count mismatched.");
 
             var clusters = featureClasses.Select(x => Cluster(x, k));
+
+            return clusters
+                .OrderBy(x => x.Centroid.)
         }
 
         public IEnumerable<Cluster> Cluster(FeatureClass featureClass, int k = 1)
         {
-            var randomIndices = Enumerable.Range(0, featureClass.Samples.Count - 1)
+            var samples = featureClass.Samples;
+
+            var randomIndices = Enumerable.Range(0, samples.Count - 1)
                 .TakeRandom(k)
                 .ToList();
 
             var clusters = new List<Cluster>();
 
             for (int i = 0; i < k - 1; i++)
-                clusters.Add(new Cluster
-                {
-                    Mean = featureClass.Samples[randomIndices[i]],
-                    SamplesIndices = new List<int> { randomIndices[i] }
-                });
-
-
-
-            foreach (var sample in featureClass.Samples)
             {
-
+                var cluster = new Cluster(randomIndices[i], featureClass.Samples[randomIndices[i]])
+                {
+                    FeatureClassName = featureClass.Name
+                };
+                clusters.Add(cluster);
+                samples.RemoveAt(randomIndices[i]);
             }
+
+            foreach (var sample in samples)
+            {
+                var chosenCluster = clusters
+                    .First(x => x.Centroid.EuclidDistance(sample) == clusters.Min(y => y.Centroid.EuclidDistance(sample)));
+                chosenCluster.Add(featureClass.Samples.IndexOf(sample), sample);
+            }
+
+            return clusters;
         }
     }
 }
