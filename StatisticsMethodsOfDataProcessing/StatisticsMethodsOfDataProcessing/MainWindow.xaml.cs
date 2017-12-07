@@ -142,7 +142,7 @@ namespace StatisticsMethodsOfDataProcessing
             int k = 1;
             try
             {
-                sample = Vector<double>.Build.DenseOfEnumerable(ClassificationSampleTextBox.Text.Split(',').Select(x => double.Parse(x)));
+                sample = Vector<double>.Build.DenseOfEnumerable(ClassificationSampleTextBox.Text.Split(',').Select(x => double.Parse(x.Replace('.',','))));
                 k = int.Parse(ClassificationKTextBox.Text);
             }
             catch (Exception)
