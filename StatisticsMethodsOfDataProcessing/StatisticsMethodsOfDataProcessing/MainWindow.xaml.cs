@@ -50,7 +50,7 @@ namespace StatisticsMethodsOfDataProcessing
                         FeatureClasses = GetFeatureClasses(fileContent);
                         foreach (var featureClass in FeatureClasses)
                         {
-                            if (featureClass.Features.Count < 10 && featureClass.SampleCount < 10)
+                            if (featureClass.Features.Count < 10 && featureClass.Samples.Count < 10)
                                 ResultsTextBox.AppendText($"{Environment.NewLine}{featureClass.ToString()}");
                             else
                                 ResultsTextBox.AppendText($"{Environment.NewLine}{featureClass.Name} class loaded");
@@ -155,14 +155,24 @@ namespace StatisticsMethodsOfDataProcessing
             switch ((ClassificationAlgorithm)ClassificationClassifierComboBox.SelectedIndex)
             {
                 case ClassificationAlgorithm.NearestNeighbours:
-                    classifier = new NearestNeighboursClassifier();
-                    break;
+                    {
+                        classifier = new NearestNeighboursClassifier();
+                        break;
+                    }
                 case ClassificationAlgorithm.NearestMeans:
-                    classifier = new NearestMeansClassifier();
-                    break;
+                    {
+                        if (!int.TryParse(ClassifiersTrainingPartTextBox.Text, out int trainingPart) || trainingPart < 0 || trainingPart > 100)
+                            throw new ArgumentOutOfRangeException("Training part should be in range 0-100.");
+                        classifier = new NearestMeansClassifier();
+                        break;
+                    }
                 case ClassificationAlgorithm.NearestMeansWithDispertion:
-                    classifier = new NearestMeansWithDispertionClassifier();
-                    break;
+                    {
+                        if (!int.TryParse(ClassifiersTrainingPartTextBox.Text, out int trainingPart) || trainingPart < 0 || trainingPart > 100)
+                            throw new ArgumentOutOfRangeException("Training part should be in range 0-100.");
+                        classifier = new NearestMeansWithDispertionClassifier();
+                        break;
+                    }
             }
             string classificationResultClassName = string.Empty;
             try

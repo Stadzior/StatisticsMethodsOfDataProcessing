@@ -12,8 +12,8 @@ namespace StatisticsMethodsOfDataProcessing.MinimalDistanceMethods
         {
             if (featureClasses != null && featureClasses.Any())
             {
-                var matrixExpectedDimensions = new Tuple<int, int>(featureClasses.First().Features.Count, featureClasses.First().SampleCount);
-                if (featureClasses.Any(x => x.Features.Count != matrixExpectedDimensions.Item1 || x.SampleCount != matrixExpectedDimensions.Item2))
+                var matrixExpectedDimensions = new Tuple<int, int>(featureClasses.First().Features.Count, featureClasses.First().Samples.Count);
+                if (featureClasses.Any(x => x.Features.Count != matrixExpectedDimensions.Item1 || x.Samples.Count != matrixExpectedDimensions.Item2))
                     throw new InvalidOperationException("Matrices dimensions mismatched.");
 
                 if (featureCount < 1 || featureCount > featureClasses.First().Features.Count)

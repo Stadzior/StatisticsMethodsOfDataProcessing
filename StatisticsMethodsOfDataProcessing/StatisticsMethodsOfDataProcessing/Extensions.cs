@@ -143,7 +143,6 @@ namespace StatisticsMethodsOfDataProcessing
         {
             if (sourcePoint.Count != targetClass.Features.Count)
                 throw new InvalidOperationException("Vector coordinate count and class feature count mismatched.");
-
             return 0;
         }
 

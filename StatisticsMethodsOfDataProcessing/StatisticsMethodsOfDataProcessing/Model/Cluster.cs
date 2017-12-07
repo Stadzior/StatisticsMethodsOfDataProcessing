@@ -25,7 +25,7 @@ namespace StatisticsMethodsOfDataProcessing.Model
 
         private void RecalculateCentroid()
         {
-            Centroid = Vector<double>.Build.Dense(Count);
+            Centroid = Vector<double>.Build.Dense(Samples.First().Count);
             var samples = Samples.ToList();
             for (int i = 0; i < Centroid.Count; i++)
                 Centroid[i] = samples.Select(x => x[i]).Mean();
