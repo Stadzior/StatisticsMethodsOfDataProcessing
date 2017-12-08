@@ -137,14 +137,14 @@ namespace StatisticsMethodsOfDataProcessing
             return Math.Sqrt(result);
         }
 
-        public static double MahalanobisDistance(this Vector<double> source, FeatureClass target)
+        public static double MahalanobisDistance(this Vector<double> source, Matrix<double> target, Vector<double> centroid)
         {
-            if (source.Count() != target.Features.Count)
-                throw new InvalidOperationException("Vector coordinate count and class feature count mismatched.");
+            if (source.Count() != target.RowCount)
+                throw new InvalidOperationException("Vector coordinate count and matrix rows count mismatched.");
 
-            var sourceMatrix = Matrix<double>.Build.Dense(target.Samples.Count, target.Features.Count, (x,y) => source[x]);
-            var meansOfEuclidDistances = Matrix<double>.Build.Dense(target.Samples.Count, target.Features.Count, (x, y) => sourceMatrix.Row(x).Mean());
-            return (sourceMatrix - meansOfEuclidDistances).Transpose() * target.Matrix.CovarianceMatrix().Inverse() * (sourceMatrix - meansOfEuclidDistances);
+            var sourceMatrix = Matrix<double>.Build.Dense(target.RowCount, 1, (x,y) => source[x]);
+            var meansOfEuclidDistances = Matrix<double>.Build.Dense(target.RowCount, 1, (x, y) => source.EuclidDistance(centroid));
+            return ((sourceMatrix - meansOfEuclidDistances).Transpose() * target.CovarianceMatrix().Inverse() * (sourceMatrix - meansOfEuclidDistances))[0,0];
         }
 
         public static IEnumerable<T> ExceptWithDuplicates<T>(this IEnumerable<T> source, IEnumerable<T> exceptionalCollection)

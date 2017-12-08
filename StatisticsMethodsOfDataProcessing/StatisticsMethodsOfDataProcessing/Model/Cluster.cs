@@ -19,6 +19,7 @@ namespace StatisticsMethodsOfDataProcessing.Model
 
         public IEnumerable<int> SampleIndices => Items.Select(x => x.Item1);
         public IEnumerable<Vector<double>> Samples => Items.Select(x => x.Item2);
+        public Matrix<double> ToMatrix() => Matrix<double>.Build.DenseOfColumnVectors(Items.Select(x => x.Item2));
 
         public void Add(int index, Vector<double> sample)
             => Add(new Tuple<int, Vector<double>>(index, sample));

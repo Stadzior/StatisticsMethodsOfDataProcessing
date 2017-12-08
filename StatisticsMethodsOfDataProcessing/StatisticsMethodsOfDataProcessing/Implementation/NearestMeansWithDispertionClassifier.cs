@@ -33,7 +33,10 @@ namespace StatisticsMethodsOfDataProcessing.MinimalDistanceMethods
             foreach (var sample in samples)
             {
                 var chosenCluster = clusters
-                    .First(x => x.Centroid.EuclidDistance(sample) == clusters.Min(y => y.Centroid.MahalonobisDistance()));
+                    .Select(x => new Tuple<double, Cluster>(sample.MahalanobisDistance(x.ToMatrix(), x.Centroid), x))
+                    .OrderBy(x => x.Item1)
+                    .First()
+                    .Item2;
                 chosenCluster.Add(featureClass.Samples.IndexOf(sample), sample);
             }
 
