@@ -69,7 +69,7 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="Implementation\Interfaces\IClassifier.cs" />
     <Compile Include="Implementation\Interfaces\IClusterer.cs" />
-    <Compile Include="Implementation\NearestMeansWithDispertionClassifier.cs" />
+    <Compile Include="Implementation\NearestMeansClassifierWithDispertion.cs" />
     <Compile Include="Model\Cluster.cs" />
     <Compile Include="Model\FeatureClass.cs" />
     <Compile Include="Enums\FeatureSelectionAlgorithm.cs" />

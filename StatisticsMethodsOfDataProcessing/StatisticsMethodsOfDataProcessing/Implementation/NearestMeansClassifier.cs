@@ -10,7 +10,7 @@ namespace StatisticsMethodsOfDataProcessing.MinimalDistanceMethods
 {
     public class NearestMeansClassifier : IClassifier, IClusterer
     {
-        public string Classify(Vector<double> sourceSample, IEnumerable<FeatureClass> featureClasses, int k = 1)
+        public virtual string Classify(Vector<double> sourceSample, IEnumerable<FeatureClass> featureClasses, int k = 1)
         {
             if (featureClasses == null || !featureClasses.Any())
                 return null;
