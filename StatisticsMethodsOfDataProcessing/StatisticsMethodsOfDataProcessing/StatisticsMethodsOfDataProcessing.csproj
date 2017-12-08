@@ -115,5 +115,8 @@
   <ItemGroup>
     <Resource Include="Assets\TestSample.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\MahalonobisSample.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
