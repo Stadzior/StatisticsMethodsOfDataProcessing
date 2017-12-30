@@ -164,5 +164,16 @@ namespace StatisticsMethodsOfDataProcessing
             return randoms;
         }
 
+        public static string ToReadableString<T>(this Vector<T> source) where T:struct, IEquatable<T>, IFormattable
+        {
+            var readableStringBuilder = new StringBuilder("[");
+            foreach (var factor in source)
+                readableStringBuilder
+                    .Append(factor)
+                    .Append(",");
+            readableStringBuilder.Remove(readableStringBuilder.Length - 1, 1);
+            readableStringBuilder.Append("]");
+            return readableStringBuilder.ToString();
+        }
     }
 }

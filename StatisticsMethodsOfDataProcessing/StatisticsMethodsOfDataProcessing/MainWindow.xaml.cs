@@ -1,6 +1,7 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
 using Microsoft.Win32;
 using StatisticsMethodsOfDataProcessing.Enums;
+using StatisticsMethodsOfDataProcessing.Implementation.Interfaces;
 using StatisticsMethodsOfDataProcessing.MinimalDistanceMethods;
 using StatisticsMethodsOfDataProcessing.MinimalDistanceMethods.Interfaces;
 using StatisticsMethodsOfDataProcessing.Model;
@@ -134,58 +135,111 @@ namespace StatisticsMethodsOfDataProcessing
         {
             if (FeatureClasses == null || !FeatureClasses.Any())
             {
-                ResultsTextBox.AppendText($"{Environment.NewLine}There is no class loaded, use Open file button to load some data.");
+                ResultsTextBox.AppendText($"{Environment.NewLine}There is no class loaded, use open file button to load some data.");
                 return;
             }
 
-            Vector<double> sample = null;
             int k = 1;
             try
             {
-                sample = Vector<double>.Build.DenseOfEnumerable(ClassificationSampleTextBox.Text.Split(',').Select(x => double.Parse(x.Replace('.',','))));
                 k = int.Parse(ClassificationKTextBox.Text);
             }
             catch (Exception)
             {
-                ResultsTextBox.AppendText($"{Environment.NewLine}Incorrect format of sample or k use:{Environment.NewLine}- \"double,double,double...\" e.g. \"1.023,34.232,43.123\" for sample{Environment.NewLine}- integer for k");
+                ResultsTextBox.AppendText($"{Environment.NewLine}Incorrect format, k should be an integer.");
                 return;
             }
 
-            IClassifier classifier = null;
-            switch ((ClassificationAlgorithm)ClassificationClassifierComboBox.SelectedIndex)
+            if ((ClassificationAlgorithm)ClassificationClassifierComboBox.SelectedIndex == ClassificationAlgorithm.NearestNeighbours)
             {
-                case ClassificationAlgorithm.NearestNeighbours:
-                    {
-                        classifier = new NearestNeighboursClassifier();
-                        break;
-                    }
-                case ClassificationAlgorithm.NearestMeans:
-                    {
-                        if (!int.TryParse(ClassificationTrainingPartTextBox.Text, out int trainingPart) || trainingPart < 0 || trainingPart > 100)
-                            throw new ArgumentOutOfRangeException("Training part should be in range 0-100.");
-                        classifier = new NearestMeansClassifier();
-                        break;
-                    }
-                case ClassificationAlgorithm.NearestMeansWithDispertion:
-                    {
-                        if (!int.TryParse(ClassificationTrainingPartTextBox.Text, out int trainingPart) || trainingPart < 0 || trainingPart > 100)
-                            throw new ArgumentOutOfRangeException("Training part should be in range 0-100.");
-                        classifier = new NearestMeansWithDispertionClassifier();
-                        break;
-                    }
-            }
-            string classificationResultClassName = string.Empty;
-            try
-            {
-                classificationResultClassName = classifier.Classify(sample, FeatureClasses, k);
-            }
-            catch (Exception ex)
-            {
-                ResultsTextBox.AppendText($"{Environment.NewLine}Error occured while classifying: {ex.Message}");
-                return;
-            }
+                Vector<double> sample = null;
+                try
+                {
+                    sample = Vector<double>.Build.DenseOfEnumerable(ClassificationSampleTextBox.Text.Split(',').Select(x => double.Parse(x.Replace('.', ','))));
+                }
+                catch (Exception)
+                {
+                    ResultsTextBox.AppendText($"{Environment.NewLine}Incorrect format of sample, should be:{Environment.NewLine}- \"double,double,double...\" e.g. \"1.023,34.232,43.123\"");
+                    return;
+                }
 
-            ResultsTextBox.AppendText($"{Environment.NewLine}Sample has been classified to class: {classificationResultClassName}");
+                var classifier = new NearestNeighboursClassifier();
+                var classificationResultClassName = string.Empty;
+                try
+                {
+                    classificationResultClassName = classifier.Classify(sample, FeatureClasses, k);
+                }
+                catch (Exception ex)
+                {
+                    ResultsTextBox.AppendText($"{Environment.NewLine}Error occured while classifying: {ex.Message}");
+                    return;
+                }
+
+                ResultsTextBox.AppendText($"{Environment.NewLine}Sample has been classified to class: {classificationResultClassName}");
+            }
+            else
+            {
+                if (!int.TryParse(ClassificationTrainingPartTextBox.Text, out int trainingPart) || trainingPart < 0 || trainingPart > 100)
+                    throw new ArgumentOutOfRangeException("Training part should be in range 0-100.");
+                IClassifier classifier = null;
+                switch ((ClassificationAlgorithm)ClassificationClassifierComboBox.SelectedIndex)
+                {
+                    case ClassificationAlgorithm.NearestMeans:
+                        {
+                            classifier = new NearestMeansClassifier();
+                            break;
+                        }
+                    case ClassificationAlgorithm.NearestMeansWithDispertion:
+                        {
+                            classifier = new NearestMeansWithDispertionClassifier();
+                            break;
+                        }
+                }
+
+                var trainingPartCount = (int) Math.Ceiling(FeatureClasses.First().Samples.Count * (trainingPart / 100.0));
+                var trainingParts = FeatureClasses
+                    .Select(x => new FeatureClass
+                    {
+                        Name = x.Name,
+                        Matrix = x.Matrix.SubMatrix(0, x.Features.Count, 0, trainingPartCount)
+                    });
+
+                var samplesToClassify = FeatureClasses
+                    .SelectMany(x => x.Samples.Skip(trainingPartCount)
+                    .Select(y => new KeyValuePair<string, Vector<double>>(x.Name, y)));
+
+                try
+                {
+                    var classificationResults = samplesToClassify
+                        .Select(x => new
+                        {
+                            ClassifiedClassName = classifier.Classify(x.Value, trainingParts, k),
+                            ActualClassName = x.Key,
+                            Sample = x.Value
+                        });
+
+                    if (classificationResults.Count() < 20)
+                    {
+                        foreach (var result in classificationResults)
+                        {
+                            if (result.ActualClassName.Equals(result.ClassifiedClassName))
+                                ResultsTextBox.AppendText($"{Environment.NewLine}Sample [{result.Sample.ToReadableString()}] has been correctly classified to class {result.ClassifiedClassName}.");
+                            else
+                                ResultsTextBox.AppendText($"{Environment.NewLine}Sample {result.Sample.ToReadableString()} has been classified to class {result.ClassifiedClassName} but actually belongs to class {result.ActualClassName}.");
+                        }
+                    }
+                    else
+                    {
+                        var correctlyClassifiedSamplesCount = classificationResults.Where(x => x.ActualClassName.Equals(x.ClassifiedClassName)).Count();
+                        ResultsTextBox.AppendText($"{Environment.NewLine} {correctlyClassifiedSamplesCount} out of {classificationResults.Count()} ({(correctlyClassifiedSamplesCount / classificationResults.Count()) * 100.0}%) samples was classified correctly.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ResultsTextBox.AppendText($"{Environment.NewLine}Error occured while classifying: {ex.Message}");
+                    return;
+                }
+            }
         }
 
         #endregion
