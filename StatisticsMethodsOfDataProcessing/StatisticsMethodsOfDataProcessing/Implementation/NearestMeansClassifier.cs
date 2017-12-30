@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace StatisticsMethodsOfDataProcessing.MinimalDistanceMethods
 {
-    public class NearestMeansClassifier : IClassifier, IClusterer
+    public class NearestMeansClassifier : IClassifier
     {
         public virtual string Classify(Vector<double> sourceSample, IEnumerable<FeatureClass> featureClasses, int k = 1)
         {
@@ -21,12 +21,17 @@ namespace StatisticsMethodsOfDataProcessing.MinimalDistanceMethods
             var clusters = featureClasses
                 .SelectMany(x => Cluster(x, k));
 
+            return Classify(sourceSample, clusters);
+        }
+
+        public virtual string Classify(Vector<double> sourceSample, IEnumerable<Cluster> clusters)
+        {
             return clusters
                 .OrderBy(x => x.Centroid.EuclidDistance(sourceSample))
                 .First()
                 .FeatureClassName;
         }
-        
+
         public virtual IEnumerable<Cluster> Cluster(FeatureClass featureClass, int k = 1)
         {
             var samples = featureClass.Samples;

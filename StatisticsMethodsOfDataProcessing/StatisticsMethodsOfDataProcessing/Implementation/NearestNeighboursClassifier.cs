@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace StatisticsMethodsOfDataProcessing.MinimalDistanceMethods
 {
-    public class NearestNeighboursClassifier : IClassifier
+    public class NearestNeighboursClassifier : ISimpleClassifier
     {
         public string Classify(Vector<double> sourceSample, IEnumerable<FeatureClass> featureClasses, int k = 1)
         {

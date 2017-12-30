@@ -208,15 +208,26 @@ namespace StatisticsMethodsOfDataProcessing
                     .SelectMany(x => x.Samples.Skip(trainingPartCount)
                     .Select(y => new KeyValuePair<string, Vector<double>>(x.Name, y)));
 
+                ProgressBar.Minimum = 0;
+                ProgressBar.Maximum = samplesToClassify.Count();
+
                 try
                 {
+                    var clusters = trainingParts
+                        .SelectMany(x => classifier.Cluster(x, k));
+
                     var classificationResults = samplesToClassify
-                        .Select(x => new
+                        .Select(x => 
                         {
-                            ClassifiedClassName = classifier.Classify(x.Value, trainingParts, k),
-                            ActualClassName = x.Key,
-                            Sample = x.Value
-                        });
+                            Dispatcher.BeginInvoke(new Action(() => ProgressBar.Value += 1));
+                            return new
+                            {
+                                ClassifiedClassName = classifier.Classify(x.Value, clusters),
+                                ActualClassName = x.Key,
+                                Sample = x.Value
+                            };
+                        })
+                        .AsParallel();
 
                     if (classificationResults.Count() < 20)
                     {
