@@ -150,7 +150,7 @@
                         Margin="0,10,0,10"
                         HorizontalAlignment="Left" />
                     <Label
-                        x:Name="ClassifiersTrainingPartLabel"
+                        x:Name="ClassificationTrainingPartLabel"
                         Grid.Row="3"
                         Grid.Column="0"
                         Width="100"
@@ -158,7 +158,7 @@
                         HorizontalAlignment="Left"
                         Content="Training part (%):" />
                     <TextBox
-                        x:Name="ClassifiersTrainingPartTextBox"
+                        x:Name="ClassificationTrainingPartTextBox"
                         Grid.Row="3"
                         Grid.Column="1"
                         Width="100"

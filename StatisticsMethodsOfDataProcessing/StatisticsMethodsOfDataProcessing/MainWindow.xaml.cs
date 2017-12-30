@@ -161,14 +161,14 @@ namespace StatisticsMethodsOfDataProcessing
                     }
                 case ClassificationAlgorithm.NearestMeans:
                     {
-                        if (!int.TryParse(ClassifiersTrainingPartTextBox.Text, out int trainingPart) || trainingPart < 0 || trainingPart > 100)
+                        if (!int.TryParse(ClassificationTrainingPartTextBox.Text, out int trainingPart) || trainingPart < 0 || trainingPart > 100)
                             throw new ArgumentOutOfRangeException("Training part should be in range 0-100.");
                         classifier = new NearestMeansClassifier();
                         break;
                     }
                 case ClassificationAlgorithm.NearestMeansWithDispertion:
                     {
-                        if (!int.TryParse(ClassifiersTrainingPartTextBox.Text, out int trainingPart) || trainingPart < 0 || trainingPart > 100)
+                        if (!int.TryParse(ClassificationTrainingPartTextBox.Text, out int trainingPart) || trainingPart < 0 || trainingPart > 100)
                             throw new ArgumentOutOfRangeException("Training part should be in range 0-100.");
                         classifier = new NearestMeansWithDispertionClassifier();
                         break;
@@ -224,8 +224,10 @@ namespace StatisticsMethodsOfDataProcessing
 
         private void ClassificationClassifierComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (ClassifiersTrainingPartTextBox != null)
-                ClassifiersTrainingPartTextBox.IsEnabled = (sender as ComboBox)?.SelectedIndex != (int)ClassificationAlgorithm.NearestNeighbours;
+            if (ClassificationTrainingPartTextBox != null)
+                ClassificationTrainingPartTextBox.IsEnabled = (sender as ComboBox)?.SelectedIndex != (int)ClassificationAlgorithm.NearestNeighbours;
+            if (ClassificationSampleTextBox != null)
+                ClassificationSampleTextBox.IsEnabled = !ClassificationTrainingPartTextBox.IsEnabled;
         }
     }
 }

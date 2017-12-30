@@ -55,6 +55,7 @@ namespace StatisticsMethodsOfDataProcessing.MinimalDistanceMethods
                     .OrderBy(x => x.Item1)
                     .First()
                     .Item2;
+
                 chosenCluster.Add(featureClass.Samples.IndexOf(sample), sample);
             }
 
