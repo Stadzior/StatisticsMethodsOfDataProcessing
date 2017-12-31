@@ -11,8 +11,8 @@ namespace StatisticsMethodsOfDataProcessing.Model
     {
         public string Name { get; set; }
         public Matrix<double> Matrix { get; set; }
-        public IList<Vector<double>> Features => Matrix.ColumnsAsVectors();
-        public IList<Vector<double>> Samples => Matrix.RowsAsVectors();
+        public IList<Vector<double>> Features => Matrix.RowsAsVectors();
+        public IList<Vector<double>> Samples => Matrix.ColumnsAsVectors();
 
         public override string ToString()
             => new StringBuilder(Name)

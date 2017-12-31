@@ -260,26 +260,26 @@ namespace StatisticsMethodsOfDataProcessing
             var featureClasses = new List<FeatureClass>();
             var splittedRows = fileContent.Select(x => x.Split(','));
             var classNames = splittedRows.Select(x => x[0]).Distinct();
-            var featureCount = splittedRows
+            var sampleCount = splittedRows
                 .Select(x => x.ExceptWithDuplicates(new string[] { x[0] }).Count())
                 .Min();
 
             foreach (var className in classNames)
             {
-                var samples = splittedRows.Where(x => x[0].Equals(className)).ToList();
+                var features = splittedRows.Where(x => x[0].Equals(className)).ToList();
                 var featureClass = new FeatureClass
                 {
                     Name = className,
-                    Matrix = Matrix<double>.Build.Dense(featureCount, samples.Count())
+                    Matrix = Matrix<double>.Build.Dense(features.Count(), sampleCount)
                 };
 
-                for (int i = 0; i < samples.Count(); i++)
+                for (int i = 0; i < features.Count(); i++)
                 {
-                    var sampleData = samples[i].ExceptWithDuplicates(new string[] { className }).ToList();
-                    for (int j = 0; j < featureCount; j++)
+                    var featureData = features[i].ExceptWithDuplicates(new string[] { className }).ToList();
+                    for (int j = 0; j < sampleCount; j++)
                     {
-                        var factor = sampleData[j];
-                        featureClass.Matrix[i, j] = double.Parse(factor.Replace('.',','));
+                        var sample = featureData[j];
+                        featureClass.Matrix[i, j] = double.Parse(sample.Replace('.',','));
                     }
                 }
                 featureClasses.Add(featureClass);
