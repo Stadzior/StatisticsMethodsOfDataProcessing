@@ -133,6 +133,8 @@ namespace StatisticsMethodsOfDataProcessing
 
         private void ClassificationClassifyButton_Click(object sender, RoutedEventArgs e)
         {
+            ProgressBar.Value = 0;
+
             if (FeatureClasses == null || !FeatureClasses.Any())
             {
                 ResultsTextBox.AppendText($"{Environment.NewLine}There is no class loaded, use open file button to load some data.");
@@ -214,10 +216,11 @@ namespace StatisticsMethodsOfDataProcessing
                 try
                 {
                     var clusters = trainingParts
-                        .SelectMany(x => classifier.Cluster(x, k));
+                        .SelectMany(x => classifier.Cluster(x, k))
+                        .ToList(); //Preventing randomisation in clustering to have an impact on further code.
 
                     var classificationResults = samplesToClassify
-                        .Select(x => 
+                        .Select(x =>
                         {
                             Dispatcher.BeginInvoke(new Action(() => ProgressBar.Value += 1));
                             return new
@@ -227,7 +230,7 @@ namespace StatisticsMethodsOfDataProcessing
                                 Sample = x.Value
                             };
                         })
-                        .AsParallel();
+                        .ToList();
 
                     if (classificationResults.Count() < 20)
                     {
@@ -242,7 +245,7 @@ namespace StatisticsMethodsOfDataProcessing
                     else
                     {
                         var correctlyClassifiedSamplesCount = classificationResults.Where(x => x.ActualClassName.Equals(x.ClassifiedClassName)).Count();
-                        ResultsTextBox.AppendText($"{Environment.NewLine} {correctlyClassifiedSamplesCount} out of {classificationResults.Count()} ({(correctlyClassifiedSamplesCount / classificationResults.Count()) * 100.0}%) samples was classified correctly.");
+                        ResultsTextBox.AppendText($"{Environment.NewLine} {correctlyClassifiedSamplesCount} out of {classificationResults.Count()} ({((correctlyClassifiedSamplesCount / (double) classificationResults.Count()) * 100).ToString("###.##")}%) samples was classified correctly.");
                     }
                 }
                 catch (Exception ex)
@@ -260,26 +263,26 @@ namespace StatisticsMethodsOfDataProcessing
             var featureClasses = new List<FeatureClass>();
             var splittedRows = fileContent.Select(x => x.Split(','));
             var classNames = splittedRows.Select(x => x[0]).Distinct();
-            var sampleCount = splittedRows
+            var featureCount = splittedRows
                 .Select(x => x.ExceptWithDuplicates(new string[] { x[0] }).Count())
                 .Min();
 
             foreach (var className in classNames)
             {
-                var features = splittedRows.Where(x => x[0].Equals(className)).ToList();
+                var samples = splittedRows.Where(x => x[0].Equals(className)).ToList();
                 var featureClass = new FeatureClass
                 {
                     Name = className,
-                    Matrix = Matrix<double>.Build.Dense(features.Count(), sampleCount)
+                    Matrix = Matrix<double>.Build.Dense(featureCount, samples.Count())
                 };
 
-                for (int i = 0; i < features.Count(); i++)
+                for (int i = 0; i < samples.Count(); i++)
                 {
-                    var featureData = features[i].ExceptWithDuplicates(new string[] { className }).ToList();
-                    for (int j = 0; j < sampleCount; j++)
+                    var sampleData = samples[i].ExceptWithDuplicates(new string[] { className }).ToList();
+                    for (int j = 0; j < featureCount; j++)
                     {
-                        var sample = featureData[j];
-                        featureClass.Matrix[i, j] = double.Parse(sample.Replace('.',','));
+                        var factor = sampleData[j];
+                        featureClass.Matrix[j,i] = double.Parse(factor.Replace('.',','));
                     }
                 }
                 featureClasses.Add(featureClass);

@@ -33,7 +33,7 @@ namespace StatisticsMethodsOfDataProcessing
         public static IEnumerable<int> GetColumnsIndices<T>(this Matrix<T> source) where T : struct, IEquatable<T>, IFormattable
             => Enumerable.Range(0, source.ColumnCount);
 
-        public static IEnumerable<IList<T>> GetAllPermutations<T>(this IEnumerable<T> source, int combinationSize)
+        public static IEnumerable<IList<T>> GetAllCombinations<T>(this IEnumerable<T> source, int combinationSize)
         {
             if (combinationSize < 1 || combinationSize > source.Count())
                 throw new ArgumentException("Combination size is invalid.");
@@ -43,7 +43,8 @@ namespace StatisticsMethodsOfDataProcessing
             {
                 if (combinationSize > 1)
                 {
-                    foreach (var nestedItems in source.Where(x => !x.Equals(item)).GetAllPermutations(combinationSize - 1))
+                    var nestedCombinations = source.Where(x => !x.Equals(item)).GetAllCombinations(combinationSize - 1).ToList();
+                    foreach (var nestedItems in nestedCombinations)
                     {
                         var combination = new List<T> { item };
                         combination.AddRange(nestedItems);

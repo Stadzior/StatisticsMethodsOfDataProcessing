@@ -24,8 +24,9 @@ namespace StatisticsMethodsOfDataProcessing.MinimalDistanceMethods
                 else
                 {
                     var fisherFactorTuples = new List<Tuple<IEnumerable<int>, double>>();
-                    foreach (var permutation in featureClasses.First().Matrix.GetRowsIndices().GetAllPermutations(featureCount))
-                        fisherFactorTuples.Add(new Tuple<IEnumerable<int>, double>(permutation, GetFisherFactor(featureClasses, permutation)));
+                    var combinations = featureClasses.First().Matrix.GetRowsIndices().GetAllCombinations(featureCount).ToList();
+                    foreach (var combination in combinations)
+                        fisherFactorTuples.Add(new Tuple<IEnumerable<int>, double>(combination, GetFisherFactor(featureClasses, combination)));
 
                     return fisherFactorTuples
                         .OrderByDescending(x => x.Item2)
@@ -37,16 +38,16 @@ namespace StatisticsMethodsOfDataProcessing.MinimalDistanceMethods
                 return null;
         }
 
-        private double GetFisherFactor(IList<FeatureClass> featureClasses, IList<int> permutation)
+        private double GetFisherFactor(IList<FeatureClass> featureClasses, IList<int> combination)
         {
             var numerator = featureClasses
                 .MeansMatrix()
-                .SubMatrix(permutation)
+                .SubMatrix(combination)
                 .CovarianceMatrix()
                 .Determinant();
 
             var denominator = featureClasses
-                .Select(x => x.Matrix.SubMatrix(permutation)
+                .Select(x => x.Matrix.SubMatrix(combination)
                 .CovarianceMatrix()
                 .Determinant())
                 .Sum();
@@ -64,16 +65,16 @@ namespace StatisticsMethodsOfDataProcessing.MinimalDistanceMethods
             else
             {
                 var bestNFeatures = DiscriminateWithSequentialForwardSelection(featureClasses, featureCount - 1);
-                var permutations = featureClasses
+                var combinations = featureClasses
                     .First()
                     .Matrix
                     .GetRowsIndices()
-                    .GetAllPermutations(featureCount)
+                    .GetAllCombinations(featureCount)
                     .Where(x => bestNFeatures.All(y => x.Contains(y)));
 
                 var fisherFactorTuples = new List<Tuple<IEnumerable<int>, double>>();
-                foreach (var permutation in permutations)
-                    fisherFactorTuples.Add(new Tuple<IEnumerable<int>, double>(permutation, GetFisherFactor(featureClasses, permutation)));
+                foreach (var combination in combinations)
+                    fisherFactorTuples.Add(new Tuple<IEnumerable<int>, double>(combination, GetFisherFactor(featureClasses, combination)));
 
                 return fisherFactorTuples
                     .OrderByDescending(x => x.Item2)
