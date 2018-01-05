@@ -181,9 +181,8 @@ namespace StatisticsMethodsOfDataProcessing
             }
             else
             {
-                if (!int.TryParse(ClassificationTrainingPartTextBox.Text, out int trainingPart) || trainingPart < 0 || trainingPart > 100)
-                    throw new ArgumentOutOfRangeException("Training part should be in range 0-100.");
                 IClassifier classifier = null;
+
                 switch ((ClassificationAlgorithm)ClassificationClassifierComboBox.SelectedIndex)
                 {
                     case ClassificationAlgorithm.NearestMeans:
@@ -198,17 +197,70 @@ namespace StatisticsMethodsOfDataProcessing
                         }
                 }
 
-                var trainingPartCount = (int) Math.Ceiling(FeatureClasses.First().Samples.Count * (trainingPart / 100.0));
-                var trainingParts = FeatureClasses
-                    .Select(x => new FeatureClass
-                    {
-                        Name = x.Name,
-                        Matrix = x.Matrix.SubMatrix(0, x.Features.Count, 0, trainingPartCount)
-                    });
+                IEnumerable<FeatureClass> trainingParts;
+                IEnumerable<KeyValuePair<string, Vector<double>>> samplesToClassify;
 
-                var samplesToClassify = FeatureClasses
-                    .SelectMany(x => x.Samples.Skip(trainingPartCount)
-                    .Select(y => new KeyValuePair<string, Vector<double>>(x.Name, y)));
+                if (ClassificationCustomRadioButton.IsChecked ?? false)
+                {
+                    if (!int.TryParse(ClassificationTrainingPartTextBox.Text, out int trainingPart) || trainingPart < 0 || trainingPart > 100)
+                        throw new ArgumentOutOfRangeException("Training part should be in range 0-100.");
+
+                    var trainingPartCount = (int)Math.Ceiling(FeatureClasses.First().Samples.Count * (trainingPart / 100.0));
+                    trainingParts = FeatureClasses
+                        .Select(x => new FeatureClass
+                        {
+                            Name = x.Name,
+                            Matrix = x.Matrix.SubMatrix(0, x.Features.Count, 0, trainingPartCount)
+                        });
+
+                    samplesToClassify = FeatureClasses
+                        .SelectMany(x => x.Samples.Skip(trainingPartCount)
+                        .Select(y => new KeyValuePair<string, Vector<double>>(x.Name, y)));
+                }
+                else
+                {
+                    int k2 = 1;
+                    try
+                    {
+                        k2 = int.Parse(ClassificationK2TextBox.Text);
+                    }
+                    catch (Exception)
+                    {
+                        ResultsTextBox.AppendText($"{Environment.NewLine}Incorrect format, k2 should be an integer.");
+                        return;
+                    }
+
+                    if (ClassificationBootstrapRadioButton.IsChecked ?? false)
+                    {
+                        var trainingPartIndices = new List<int>();
+                        var randomizer = new Random();
+                        var sampleCount = FeatureClasses.First().Samples.Count;
+                        for (int i = 0; i < sampleCount; i++)
+                            trainingPartIndices.Add(randomizer.Next(0, sampleCount));
+
+                        trainingPartIndices = trainingPartIndices.Distinct().ToList();
+                        trainingParts = FeatureClasses
+                            .Select(x => new FeatureClass
+                            {
+                                Name = x.Name,
+                                Matrix = x.Matrix.SubMatrix(null, trainingPartIndices)
+                            });
+
+                        var testingPartIndices = Enumerable.Range(0, 101).Except(trainingPartIndices);
+                        samplesToClassify = FeatureClasses
+                            .SelectMany(x => x.Matrix.SubMatrix(null, testingPartIndices.ToList()).ColumnsAsVectors())
+                            .Select(y => new KeyValuePair<string, Vector<double>>(x.Name, y));
+                    }
+                    else if (ClassificationCrossvalidationRadioButton.IsChecked ?? false)
+                    {
+
+                    }
+                    else
+                    {
+                        ResultsTextBox.AppendText($"{Environment.NewLine}Unexpected error occured.");
+                        return;
+                    }
+                }
 
                 ProgressBar.Minimum = 0;
                 ProgressBar.Maximum = samplesToClassify.Count();
