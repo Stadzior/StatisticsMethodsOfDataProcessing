@@ -256,6 +256,22 @@ namespace StatisticsMethodsOfDataProcessing
             }
         }
 
+        private void ClassificationClassifierComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ClassificationTrainingPartTextBox != null)
+                ClassificationTrainingPartTextBox.IsEnabled = (sender as ComboBox)?.SelectedIndex != (int)ClassificationAlgorithm.NearestNeighbours
+                    && (ClassificationCustomRadioButton.IsChecked ?? false);
+            if (ClassificationSampleTextBox != null)
+                ClassificationSampleTextBox.IsEnabled = (sender as ComboBox)?.SelectedIndex == (int)ClassificationAlgorithm.NearestNeighbours;
+        }
+
+        private void ClassificationRadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            if (ClassificationTrainingPartTextBox != null)
+                ClassificationTrainingPartTextBox.IsEnabled = ClassificationClassifierComboBox.SelectedIndex != (int)ClassificationAlgorithm.NearestNeighbours
+                    && (ClassificationCustomRadioButton.IsChecked ?? false);
+        }
+
         #endregion
 
         private IList<FeatureClass> GetFeatureClasses(string[] fileContent)
@@ -288,14 +304,6 @@ namespace StatisticsMethodsOfDataProcessing
                 featureClasses.Add(featureClass);
             }
             return featureClasses;
-        }
-
-        private void ClassificationClassifierComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (ClassificationTrainingPartTextBox != null)
-                ClassificationTrainingPartTextBox.IsEnabled = (sender as ComboBox)?.SelectedIndex != (int)ClassificationAlgorithm.NearestNeighbours;
-            if (ClassificationSampleTextBox != null)
-                ClassificationSampleTextBox.IsEnabled = !ClassificationTrainingPartTextBox.IsEnabled;
         }
     }
 }

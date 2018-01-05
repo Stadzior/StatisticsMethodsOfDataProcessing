@@ -172,7 +172,7 @@
                         Grid.Row="1"
                         Grid.Column="2"
                         Margin="0,10,0,10"
-                        Checked="ClassificationCustomRadioButton_Checked"
+                        Checked="ClassificationRadioButton_Checked"
                         Content="Custom"
                         IsChecked="True" />
                     <RadioButton
@@ -180,7 +180,7 @@
                         Grid.Row="2"
                         Grid.Column="2"
                         Margin="0,10,0,10"
-                        Checked="ClassificationBootstrapRadioButton_Checked"
+                        Checked="ClassificationRadioButton_Checked"
                         Content="Bootstrap"
                         IsChecked="True" />
                     <RadioButton
@@ -188,7 +188,7 @@
                         Grid.Row="3"
                         Grid.Column="2"
                         Margin="0,10,0,10"
-                        Checked="ClassificationCrossvalidationRadioButton_Checked"
+                        Checked="ClassificationRadioButton_Checked"
                         Content="Crossvalidation"
                         IsChecked="True" />
                 </Grid>
