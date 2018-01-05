@@ -91,7 +91,8 @@
                         <ColumnDefinition MinWidth="100" />
                         <ColumnDefinition MinWidth="135" />
                         <ColumnDefinition MinWidth="100" />
-                        <ColumnDefinition MinWidth="100" />
+                        <ColumnDefinition MinWidth="50" />
+                        <ColumnDefinition MinWidth="50" />
                     </Grid.ColumnDefinitions>
                     <Label
                         x:Name="ClassificationClassificationLabel"
@@ -166,6 +167,30 @@
                         HorizontalAlignment="Left"
                         IsEnabled="False"
                         Text="50" />
+                    <RadioButton
+                        x:Name="ClassificationCustomRadioButton"
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        Margin="0,10,0,10"
+                        Checked="ClassificationCustomRadioButton_Checked"
+                        Content="Custom"
+                        IsChecked="True" />
+                    <RadioButton
+                        x:Name="ClassificationBootstrapRadioButton"
+                        Grid.Row="2"
+                        Grid.Column="2"
+                        Margin="0,10,0,10"
+                        Checked="ClassificationBootstrapRadioButton_Checked"
+                        Content="Bootstrap"
+                        IsChecked="True" />
+                    <RadioButton
+                        x:Name="ClassificationCrossvalidationRadioButton"
+                        Grid.Row="3"
+                        Grid.Column="2"
+                        Margin="0,10,0,10"
+                        Checked="ClassificationCrossvalidationRadioButton_Checked"
+                        Content="Crossvalidation"
+                        IsChecked="True" />
                 </Grid>
             </TabItem>
         </TabControl>
