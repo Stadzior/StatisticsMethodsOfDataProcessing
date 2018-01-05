@@ -6,7 +6,7 @@
     xmlns:local="clr-namespace:StatisticsMethodsOfDataProcessing"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="MainWindow"
-    Width="444.611"
+    Width="465.611"
     Height="580.389"
     mc:Ignorable="d">
     <Grid x:Name="ParentGrid">
@@ -24,7 +24,7 @@
         </Menu>
         <TabControl
             Grid.Row="1"
-            Width="437"
+            Width="448"
             Margin="0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
@@ -88,11 +88,10 @@
                         <RowDefinition MinHeight="35" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition MinWidth="100" />
-                        <ColumnDefinition MinWidth="135" />
-                        <ColumnDefinition MinWidth="100" />
-                        <ColumnDefinition MinWidth="50" />
-                        <ColumnDefinition MinWidth="50" />
+                        <ColumnDefinition MinWidth="100" Width="25*" />
+                        <ColumnDefinition MinWidth="135" Width="34*" />
+                        <ColumnDefinition MinWidth="100" Width="27*" />
+                        <ColumnDefinition MinWidth="100" Width="25*" />
                     </Grid.ColumnDefinitions>
                     <Label
                         x:Name="ClassificationClassificationLabel"
@@ -100,16 +99,16 @@
                         Grid.Column="0"
                         Margin="0,10,0,10"
                         HorizontalAlignment="Left"
-                        Content="Classifier:" />
+                        Content="Classifier:" Width="59" />
                     <ComboBox
                         x:Name="ClassificationClassifierComboBox"
                         Grid.Row="0"
                         Grid.Column="1"
-                        Margin="0,10,0,10"
+                        Margin="0,10,0,0"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         SelectedIndex="0"
-                        SelectionChanged="ClassificationClassifierComboBox_SelectionChanged">
+                        SelectionChanged="ClassificationClassifierComboBox_SelectionChanged" Height="22" Width="132">
                         <ComboBoxItem Content="Nearest neighbours" />
                         <ComboBoxItem Content="Nearest means" />
                         <ComboBoxItem Content="Nearest means with dispertion (Mahalonobis)" />
@@ -127,11 +126,19 @@
                         Grid.Column="0"
                         Margin="0,6,0,6"
                         HorizontalAlignment="Left"
-                        Content="k:" />
+                        Content="k:" Width="19" />
                     <TextBox
                         x:Name="ClassificationKTextBox"
                         Grid.Row="1"
                         Grid.Column="1"
+                        Width="100"
+                        Margin="0,8,0,8"
+                        HorizontalAlignment="Left"
+                        Text="1" />
+                    <TextBox
+                        x:Name="ClassificationK2TextBox"
+                        Grid.Row="1"
+                        Grid.Column="2"
                         Width="100"
                         Margin="0,8,0,8"
                         HorizontalAlignment="Left"
@@ -170,7 +177,7 @@
                     <RadioButton
                         x:Name="ClassificationCustomRadioButton"
                         Grid.Row="1"
-                        Grid.Column="2"
+                        Grid.Column="3"
                         Margin="0,10,0,10"
                         Checked="ClassificationRadioButton_Checked"
                         Content="Custom"
@@ -178,19 +185,19 @@
                     <RadioButton
                         x:Name="ClassificationBootstrapRadioButton"
                         Grid.Row="2"
-                        Grid.Column="2"
+                        Grid.Column="3"
                         Margin="0,10,0,10"
                         Checked="ClassificationRadioButton_Checked"
                         Content="Bootstrap"
-                        IsChecked="True" />
+                        IsChecked="False" />
                     <RadioButton
                         x:Name="ClassificationCrossvalidationRadioButton"
                         Grid.Row="3"
-                        Grid.Column="2"
+                        Grid.Column="3"
                         Margin="0,10,0,10"
                         Checked="ClassificationRadioButton_Checked"
                         Content="Crossvalidation"
-                        IsChecked="True" />
+                        IsChecked="False" />
                 </Grid>
             </TabItem>
         </TabControl>
