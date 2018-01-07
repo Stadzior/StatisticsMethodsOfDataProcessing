@@ -211,14 +211,42 @@ namespace StatisticsMethodsOfDataProcessing
                         {
                             Name = x.Name,
                             Matrix = x.Matrix.SubMatrix(0, x.Features.Count, 0, trainingPartCount)
-                        });
+                        })
+                        .ToList();
 
                     samplesToClassify = FeatureClasses
                         .SelectMany(x => x.Samples.Skip(trainingPartCount)
-                        .Select(y => new KeyValuePair<string, Vector<double>>(x.Name, y)));
+                        .Select(y => new KeyValuePair<string, Vector<double>>(x.Name, y)))
+                        .ToList();
                 }
-                else
+                else if (ClassificationBootstrapRadioButton.IsChecked ?? false)
                 {
+                    var trainingPartIndices = new List<int>();
+                    var randomizer = new Random();
+                    var sampleCount = FeatureClasses.First().Samples.Count;
+                    for (int i = 0; i < sampleCount; i++)
+                        trainingPartIndices.Add(randomizer.Next(0, sampleCount));
+
+                    trainingPartIndices = trainingPartIndices.Distinct().ToList();
+                    trainingParts = FeatureClasses
+                        .Select(x => new FeatureClass
+                        {
+                            Name = x.Name,
+                            Matrix = x.Matrix.SubMatrix(null, trainingPartIndices)
+                        })
+                        .ToList();
+
+                    var testingPartIndices = Enumerable.Range(0, sampleCount).Except(trainingPartIndices);
+                    samplesToClassify = FeatureClasses
+                        .SelectMany(x => x.Matrix.SubMatrix(null, testingPartIndices.ToList()).ColumnsAsVectors()
+                        .Select(y => new KeyValuePair<string, Vector<double>>(x.Name, y)))
+                        .ToList();
+
+                    ResultsTextBox.AppendText($"{Environment.NewLine}[Bootstrap]");
+                }
+                else if (ClassificationCrossvalidationRadioButton.IsChecked ?? false)
+                {
+                    ResultsTextBox.AppendText($"{Environment.NewLine}[Crossvalidation]");
                     int k2 = 1;
                     try
                     {
@@ -230,36 +258,32 @@ namespace StatisticsMethodsOfDataProcessing
                         return;
                     }
 
-                    if (ClassificationBootstrapRadioButton.IsChecked ?? false)
+                    var classificationRatios = new List<double>();
+                    var folds = GetFolds(k2);
+                    for (int i = 0; i < k2; i++)
                     {
-                        var trainingPartIndices = new List<int>();
-                        var randomizer = new Random();
-                        var sampleCount = FeatureClasses.First().Samples.Count;
-                        for (int i = 0; i < sampleCount; i++)
-                            trainingPartIndices.Add(randomizer.Next(0, sampleCount));
-
-                        trainingPartIndices = trainingPartIndices.Distinct().ToList();
+                        samplesToClassify = folds[i];
+                        var trainingSamples = folds.Except(new[] { folds[i] }).SelectMany(x => x);
                         trainingParts = FeatureClasses
                             .Select(x => new FeatureClass
                             {
                                 Name = x.Name,
-                                Matrix = x.Matrix.SubMatrix(null, trainingPartIndices)
+                                Matrix = Matrix<double>.Build.DenseOfColumnVectors(trainingSamples.Where(y => y.Key.Equals(x.Name)).Select(y => y.Value))
                             });
+                        var classificationResults = GetClassificationResults(classifier, trainingParts, samplesToClassify, k);
+                        var correctlyClassifiedSamplesCount = classificationResults.Where(x => x.ActualClassName.Equals(x.ClassifiedClassName)).Count();
+                        var classificationRatio = (correctlyClassifiedSamplesCount / (double)classificationResults.Count()) * 100;
+                        classificationRatios.Add(classificationRatio);
+                        DisplayClassificationResults(classificationResults);
+                    }
 
-                        var testingPartIndices = Enumerable.Range(0, 101).Except(trainingPartIndices);
-                        samplesToClassify = FeatureClasses
-                            .SelectMany(x => x.Matrix.SubMatrix(null, testingPartIndices.ToList()).ColumnsAsVectors())
-                            .Select(y => new KeyValuePair<string, Vector<double>>(x.Name, y));
-                    }
-                    else if (ClassificationCrossvalidationRadioButton.IsChecked ?? false)
-                    {
-
-                    }
-                    else
-                    {
-                        ResultsTextBox.AppendText($"{Environment.NewLine}Unexpected error occured.");
-                        return;
-                    }
+                    ResultsTextBox.AppendText($"{Environment.NewLine} Average successful to all classifications ratio was {classificationRatios.Average().ToString("###.##")}%.");
+                    return;
+                }
+                else
+                {
+                    ResultsTextBox.AppendText($"{Environment.NewLine}Unexpected error occured.");
+                    return;
                 }
 
                 ProgressBar.Minimum = 0;
@@ -267,24 +291,9 @@ namespace StatisticsMethodsOfDataProcessing
 
                 try
                 {
-                    var clusters = trainingParts
-                        .SelectMany(x => classifier.Cluster(x, k))
-                        .ToList(); //Preventing randomisation in clustering to have an impact on further code.
+                    var classificationResults = GetClassificationResults(classifier, trainingParts, samplesToClassify, k);
 
-                    var classificationResults = samplesToClassify
-                        .Select(x =>
-                        {
-                            Dispatcher.BeginInvoke(new Action(() => ProgressBar.Value += 1));
-                            return new
-                            {
-                                ClassifiedClassName = classifier.Classify(x.Value, clusters),
-                                ActualClassName = x.Key,
-                                Sample = x.Value
-                            };
-                        })
-                        .ToList();
-
-                    if (classificationResults.Count() < 20)
+                    if (classificationResults.Count() < 5)
                     {
                         foreach (var result in classificationResults)
                         {
@@ -295,10 +304,7 @@ namespace StatisticsMethodsOfDataProcessing
                         }
                     }
                     else
-                    {
-                        var correctlyClassifiedSamplesCount = classificationResults.Where(x => x.ActualClassName.Equals(x.ClassifiedClassName)).Count();
-                        ResultsTextBox.AppendText($"{Environment.NewLine} {correctlyClassifiedSamplesCount} out of {classificationResults.Count()} ({((correctlyClassifiedSamplesCount / (double) classificationResults.Count()) * 100).ToString("###.##")}%) samples was classified correctly.");
-                    }
+                        DisplayClassificationResults(classificationResults);
                 }
                 catch (Exception ex)
                 {
@@ -306,6 +312,25 @@ namespace StatisticsMethodsOfDataProcessing
                     return;
                 }
             }
+        }
+
+        private IList<ClassificationResult> GetClassificationResults(IClassifier classifier, IEnumerable<FeatureClass> trainingParts, IEnumerable<KeyValuePair<string, Vector<double>>> samplesToClassify, int k)
+        {
+            var clusters = trainingParts
+                .SelectMany(x => classifier.Cluster(x, k))
+                .ToList(); //Preventing randomisation in clustering to have an impact on further code.
+
+            return samplesToClassify
+                .Select(x =>
+                {
+                    return new ClassificationResult
+                    {
+                        ClassifiedClassName = classifier.Classify(x.Value, clusters),
+                        ActualClassName = x.Key,
+                        Sample = x.Value
+                    };
+                })
+                .ToList();
         }
 
         private void ClassificationClassifierComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -323,6 +348,9 @@ namespace StatisticsMethodsOfDataProcessing
                 ClassificationTrainingPartTextBox.IsEnabled = ClassificationClassifierComboBox.SelectedIndex != (int)ClassificationAlgorithm.NearestNeighbours
                     && (ClassificationCustomRadioButton.IsChecked ?? false);
         }
+
+        private void ClearResultsButton_Click(object sender, RoutedEventArgs e)
+            => ResultsTextBox.Text = string.Empty;
 
         #endregion
 
@@ -356,6 +384,36 @@ namespace StatisticsMethodsOfDataProcessing
                 featureClasses.Add(featureClass);
             }
             return featureClasses;
+        }
+
+        private List<List<KeyValuePair<string, Vector<double>>>> GetFolds(int foldsCount)
+        {
+            if (FeatureClasses.First().Samples.Count % foldsCount > 0)
+                throw new InvalidOperationException($"{Environment.NewLine}Samples count must be evenly divisable by folds count.");
+
+            var folds = new List<List<KeyValuePair<string, Vector<double>>>>();
+            for (int i = 0; i < foldsCount; i++)
+            {
+                folds.Add(new List<KeyValuePair<string, Vector<double>>>());
+            };
+
+            foreach (var fold in folds)
+            {
+                foreach (var featureClass in FeatureClasses)
+                {
+                    var notTakenSamples = featureClass.Samples.Except(folds.SelectMany(x => x.Select(y => y.Value)));
+                    var randomSample = notTakenSamples.TakeRandom();
+                    fold.Add(new KeyValuePair<string, Vector<double>>(featureClass.Name, randomSample));
+                }
+            }
+
+            return folds;
+        }
+
+        private void DisplayClassificationResults(IList<ClassificationResult> classificationResults)
+        {
+            var correctlyClassifiedSamplesCount = classificationResults.Where(x => x.ActualClassName.Equals(x.ClassifiedClassName)).Count();
+            ResultsTextBox.AppendText($"{Environment.NewLine} {correctlyClassifiedSamplesCount} out of {classificationResults.Count()} ({((correctlyClassifiedSamplesCount / (double)classificationResults.Count()) * 100).ToString("###.##")}%) samples was classified correctly.");
         }
     }
 }

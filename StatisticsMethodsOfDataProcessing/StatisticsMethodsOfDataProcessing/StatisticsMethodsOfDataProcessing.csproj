@@ -71,6 +71,7 @@
     <Compile Include="Implementation\Interfaces\ISimpleClassifier.cs" />
     <Compile Include="Implementation\Interfaces\IClusterer.cs" />
     <Compile Include="Implementation\NearestMeansClassifierWithDispertion.cs" />
+    <Compile Include="Model\ClassificationResult.cs" />
     <Compile Include="Model\Cluster.cs" />
     <Compile Include="Model\FeatureClass.cs" />
     <Compile Include="Enums\FeatureSelectionAlgorithm.cs" />
@@ -118,6 +119,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\MahalonobisSample.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\LargeTestSample.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

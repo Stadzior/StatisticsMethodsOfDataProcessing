@@ -163,6 +163,9 @@ namespace StatisticsMethodsOfDataProcessing
             return randoms;
         }
 
+        public static T TakeRandom<T>(this IEnumerable<T> source)
+            => source.TakeRandom(1).First();
+
         public static string ToReadableString<T>(this Vector<T> source) where T:struct, IEquatable<T>, IFormattable
         {
             var readableStringBuilder = new StringBuilder("[");
