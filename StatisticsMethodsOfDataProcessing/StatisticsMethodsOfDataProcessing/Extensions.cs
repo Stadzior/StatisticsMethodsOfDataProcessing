@@ -153,10 +153,11 @@ namespace StatisticsMethodsOfDataProcessing
         {
             var randoms = new List<T>(count);
             var randomsIndices = new List<int>(count);
+            var randomizer = new Random();
             for (int i = 0; i < count; i++)
             {
                 var range = Enumerable.Range(0, source.Count() - 1).Where(x => !randomsIndices.Contains(x));
-                var randomIndex = new Random().Next(0, source.Count() - 1 - randomsIndices.Count());
+                var randomIndex = randomizer.Next(0, source.Count() - 1);
                 randomsIndices.Add(randomIndex);
                 randoms.Add(source.ElementAt(randomIndex));
             }

@@ -259,23 +259,32 @@ namespace StatisticsMethodsOfDataProcessing
                     }
 
                     var classificationRatios = new List<double>();
-                    var folds = GetFolds(k2);
-                    for (int i = 0; i < k2; i++)
+                    try
                     {
-                        samplesToClassify = folds[i];
-                        var trainingSamples = folds.Except(new[] { folds[i] }).SelectMany(x => x);
-                        trainingParts = FeatureClasses
-                            .Select(x => new FeatureClass
-                            {
-                                Name = x.Name,
-                                Matrix = Matrix<double>.Build.DenseOfColumnVectors(trainingSamples.Where(y => y.Key.Equals(x.Name)).Select(y => y.Value))
-                            });
-                        var classificationResults = GetClassificationResults(classifier, trainingParts, samplesToClassify, k);
-                        var correctlyClassifiedSamplesCount = classificationResults.Where(x => x.ActualClassName.Equals(x.ClassifiedClassName)).Count();
-                        var classificationRatio = (correctlyClassifiedSamplesCount / (double)classificationResults.Count()) * 100;
-                        classificationRatios.Add(classificationRatio);
-                        DisplayClassificationResults(classificationResults);
+                        var folds = GetFolds(k2);
+                        for (int i = 0; i < k2; i++)
+                        {
+                            samplesToClassify = folds[i];
+                            var trainingSamples = folds.Except(new[] { folds[i] }).SelectMany(x => x);
+                            trainingParts = FeatureClasses
+                                .Select(x => new FeatureClass
+                                {
+                                    Name = x.Name,
+                                    Matrix = Matrix<double>.Build.DenseOfColumnVectors(trainingSamples.Where(y => y.Key.Equals(x.Name)).Select(y => y.Value))
+                                });
+                            var classificationResults = GetClassificationResults(classifier, trainingParts, samplesToClassify, k);
+                            var correctlyClassifiedSamplesCount = classificationResults.Where(x => x.ActualClassName.Equals(x.ClassifiedClassName)).Count();
+                            var classificationRatio = (correctlyClassifiedSamplesCount / (double)classificationResults.Count()) * 100;
+                            classificationRatios.Add(classificationRatio);
+                            DisplayClassificationResults(classificationResults);
+                        }
                     }
+                    catch (Exception ex)
+                    {
+                        ResultsTextBox.AppendText($"{Environment.NewLine}{ex.Message}");
+                        return;
+                    }
+  
 
                     ResultsTextBox.AppendText($"{Environment.NewLine} Average successful to all classifications ratio was {classificationRatios.Average().ToString("###.##")}%.");
                     return;
@@ -293,18 +302,18 @@ namespace StatisticsMethodsOfDataProcessing
                 {
                     var classificationResults = GetClassificationResults(classifier, trainingParts, samplesToClassify, k);
 
-                    if (classificationResults.Count() < 5)
-                    {
-                        foreach (var result in classificationResults)
-                        {
-                            if (result.ActualClassName.Equals(result.ClassifiedClassName))
-                                ResultsTextBox.AppendText($"{Environment.NewLine}Sample [{result.Sample.ToReadableString()}] has been correctly classified to class {result.ClassifiedClassName}.");
-                            else
-                                ResultsTextBox.AppendText($"{Environment.NewLine}Sample {result.Sample.ToReadableString()} has been classified to class {result.ClassifiedClassName} but actually belongs to class {result.ActualClassName}.");
-                        }
-                    }
-                    else
-                        DisplayClassificationResults(classificationResults);
+                    //if (classificationResults.Count() < 5)
+                    //{
+                    //    foreach (var result in classificationResults)
+                    //    {
+                    //        if (result.ActualClassName.Equals(result.ClassifiedClassName))
+                    //            ResultsTextBox.AppendText($"{Environment.NewLine}Sample [{result.Sample.ToReadableString()}] has been correctly classified to class {result.ClassifiedClassName}.");
+                    //        else
+                    //            ResultsTextBox.AppendText($"{Environment.NewLine}Sample {result.Sample.ToReadableString()} has been classified to class {result.ClassifiedClassName} but actually belongs to class {result.ActualClassName}.");
+                    //    }
+                    //}
+                    //else
+                    DisplayClassificationResults(classificationResults);
                 }
                 catch (Exception ex)
                 {
@@ -397,13 +406,19 @@ namespace StatisticsMethodsOfDataProcessing
                 folds.Add(new List<KeyValuePair<string, Vector<double>>>());
             };
 
-            foreach (var fold in folds)
+            for (int i = 0; i < FeatureClasses.First().Samples.Count; i++)
             {
-                foreach (var featureClass in FeatureClasses)
+                foreach (var fold in folds)
                 {
-                    var notTakenSamples = featureClass.Samples.Except(folds.SelectMany(x => x.Select(y => y.Value)));
-                    var randomSample = notTakenSamples.TakeRandom();
-                    fold.Add(new KeyValuePair<string, Vector<double>>(featureClass.Name, randomSample));
+                    foreach (var featureClass in FeatureClasses)
+                    {
+                        var notTakenSamples = featureClass.Samples.Except(folds.SelectMany(x => x.Select(y => y.Value)));
+                        if (notTakenSamples.Any())
+                        {
+                            var randomSample = notTakenSamples.TakeRandom();
+                            fold.Add(new KeyValuePair<string, Vector<double>>(featureClass.Name, randomSample));
+                        }
+                    }
                 }
             }
 
